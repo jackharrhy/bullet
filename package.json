@@ -1,17 +1,18 @@
 {
-	"name": "bullet",
+	"name": "bullets",
 	"description": "a small vanilla html5 canvas object-avoding game",
 	"version": "0.0.1",
 
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/jackharrhy/dotfiles.git"
+		"url": "https://github.com/jackharrhy/bullets.git"
 	},
 
 	"devDependencies": {
 		"grunt": "~0.4.5",
 
 		"grunt-contrib-watch": "latest",
+		"grunt-contrib-clean": "latest",
 
 		"grunt-contrib-uglify": "latest",
 		"grunt-contrib-jshint": "latest",
