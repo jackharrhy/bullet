@@ -16,7 +16,6 @@
 
 		"grunt-contrib-uglify": "latest",
 		"grunt-contrib-jshint": "latest",
-		"jshint-stylish": "latest",
 
 		"grunt-contrib-less": "latest",
 		"grunt-contrib-cssmin": "latest",

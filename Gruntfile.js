@@ -5,10 +5,6 @@ module.exports = function(grunt) {
 		clean: ['temp/'],
 
 		jshint: {
-			options: {
-				reporter: require('jshint-stylish')
-			},
-
 			build: ['Gruntfile.js', 'src/**/*.js']
 		},
 		uglify: {
@@ -17,7 +13,11 @@ module.exports = function(grunt) {
 			},
 			build: {
 				files: {
-					'dist/js/bullets.min.js': 'src/js/bullets.js'
+					'dist/js/bullets.min.js': [
+						'src/js/keyboard.js',
+						'src/js/draw.js',
+						'src/js/bullets.js'
+					]
 				}
 			}
 		},
@@ -56,7 +56,6 @@ module.exports = function(grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('jshint-stylish');
 
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');

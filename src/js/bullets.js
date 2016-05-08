@@ -47,12 +47,8 @@ var pattern = {
 
 var bullets = { array: [] };
 
-function Bullet(pos,radius,color,speedpos,pattern) {
-	this.pos = pos;
-	this.radius = radius;
-	this.color = color;
-	this.speedpos = speedpos;
-	this.pattern = pattern;
+function addBullet(bulletObject) {
+	bullets.array.push(bulletObject);
 }
 
 var func = {
@@ -79,7 +75,6 @@ var func = {
 		var angle = Math.acos((obj1.pos.x - obj2.pos.x)/func.pytha(obj1.pos, obj2.pos));
 		obj2.pos.x = obj1.pos.x - (Math.cos(angle) * (obj1.radius + obj2.radius));
 
-		var yMov = Math.sin(angle) * (obj1.radius + obj2.radius);
 		if(obj2.pos.y < obj1.pos.y) {
 			obj2.pos.y = obj1.pos.y - (Math.sin(angle) * (obj1.radius + obj2.radius));
 		} else {
@@ -98,8 +93,9 @@ var func = {
 };
 
 var update = {
-	collisions: function(bullet) {
+	collision: function(bullet) {
 		if(bullet.isConnected) {
+			// Connected Collision
 			for(var b=0, len = bullets.array.length; b < len; b++) {
 				var otherBullet = bullets.array[b];
 				if(!otherBullet.isConnected &&
@@ -107,24 +103,21 @@ var update = {
 
 					func.unclog(bullet, otherBullet);
 					otherBullet.isConnected = true;
-					player.speed -= otherBullet.radius / 60;
+					player.speed -= otherBullet.radius / 120;
 				}
 			}
 		} else {
+			// Player Collision
 			if(func.squareCheck(player, bullet) && func.distanceCheck(player, bullet)) {
 				func.unclog(player, bullet);
 
 				bullet.isConnected = true;
-				player.speed -= bullet.radius / 60;
+				player.speed -= bullet.radius / 120;
 			} else {
 				bullet.pattern(bullet);
 				update.swapArround(bullet);
 			}
 		}
-	},
-
-	perfectCollision: function(bullet, i) {
-
 	},
 
 	swapArround: function(obj) {
@@ -135,49 +128,6 @@ var update = {
 		if(obj.pos.x < gameCanvas.width * -0.1)  obj.pos.x += gameCanvas.height * 1.2;
 	}
 };
-
-var draw = {
-	circle: function(ctx,pos,radius,color) {
-		ctx.fillStyle = color;
-		ctx.beginPath();
-		ctx.arc(pos.x, pos.y, radius, 0, 2*Math.PI);
-		ctx.fill();
-	},
-	line: function(ctx,pos1,pos2,width,color) {
-		ctx.beginPath();
-		ctx.moveTo(pos1.x, pos1.y);
-		ctx.lineTo(pos2.x, pos2.y);
-		ctx.lineWidth = width;
-		ctx.strokeStyle = color;
-		ctx.stroke();
-	},
-	clear: function(ctx, canvas) {
-		ctx.fillStyle = 'white';
-		ctx.fillRect(0,0,canvas.width, canvas.height);
-	},
-
-	text: function(ctx,pos,size,color) {
-		// TODO
-	},
-	menu: function() {
-		// TODO
-	}
-};
-
-var kb = {
-	up: false,
-	down: false,
-	right: false,
-	left: false
-};
-Mousetrap.bind('up',    function() { kb.up    = true;  }, 'keydown');
-Mousetrap.bind('up',    function() { kb.up    = false; }, 'keyup');
-Mousetrap.bind('down',  function() { kb.down  = true;  }, 'keydown');
-Mousetrap.bind('down',  function() { kb.down  = false; }, 'keyup');
-Mousetrap.bind('right', function() { kb.right = true;  }, 'keydown');
-Mousetrap.bind('right', function() { kb.right = false; }, 'keyup');
-Mousetrap.bind('left',  function() { kb.left  = true;  }, 'keydown');
-Mousetrap.bind('left',  function() { kb.left  = false; }, 'keyup');
 
 var frame = -1;
 var loop = {
@@ -204,20 +154,21 @@ var loop = {
 				func.applyPlayerSpeed(bullet);
 			}
 
-			update.collisions(bullet, i);
+			update.collision(bullet, i);
 			draw.circle(g,bullet.pos,bullet.radius,bullet.color);
 		}
 
-		if(frame % 30 === 0) {
-			var newBullet = new Bullet(
-				vec2(0,Math.random(0,gameCanvas.width)),
-				6 + randInt(0,4),
-				randColor(),
-				vec2(1 + (2 * Math.random()), 1 + (2 * Math.random())),
-				pattern.sideWays
-			);
-			bullets.array.push(newBullet);
+		if(frame % 60 === 0) {
+			addBullet({
+				pos: 			vec2(randInt(0,gameCanvas.width),randInt(0,gameCanvas.height)),
+				radius: 	6 + randInt(0,8),
+				color: 		randColor(),
+				speedpos: vec2(1 + (2 * Math.random()), 1 + (2 * Math.random())),
+				pattern: pattern.sideWays
+			});
 		}
+
+		draw.text(m, 'meme', 10, 'black', vec2(menuCanvas.width/2, menuCanvas.height/2));
 
 		requestAnimationFrame(loop.cur);
 	}
