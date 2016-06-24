@@ -1,4 +1,6 @@
-var menuCanvas = document.getElementById('menuCanvas'); var m = menuCanvas.getContext('2d'); menuCanvas.width = 512;
+var menuCanvas = document.getElementById('menuCanvas');
+var m = menuCanvas.getContext('2d');
+menuCanvas.width = 512;
 menuCanvas.height = 32;
 var m = menuCanvas.getContext('2d');
 
@@ -164,7 +166,7 @@ var loop = {
 				radius: 	6 + randInt(0,8),
 				color: 		randColor(),
 				speedpos: vec2(1 + (2 * Math.random()), 1 + (2 * Math.random())),
-				pattern: pattern.sideWays
+				pattern: pattern.wavyDown
 			});
 		}
 
