@@ -1,4 +1,4 @@
-var draw = {
+module.exports = {
 	circle: function(ctx,pos,radius,color) {
 		ctx.fillStyle = color;
 		ctx.beginPath();
@@ -20,7 +20,7 @@ var draw = {
 
 	text: function(ctx,text,size,color,pos) {
 		ctx.fillStyle = color;
-		ctx.font = size.toString() + 'px Arial';
+		ctx.font = size.toString() + 'px Helvetica';
 		ctx.fillText(text, pos.x, pos.y);
 	},
 	menu: function() {

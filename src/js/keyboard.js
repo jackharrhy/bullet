@@ -1,14 +1,17 @@
+var Combokeys = require('combokeys');
+var canvasInput = new Combokeys(document.documentElement);
+
 var kb = {
-	up: false,
-	down: false,
-	right: false,
-	left: false
+	up: false, down: false, left: false, right: false
 };
-Mousetrap.bind('up',    function() { kb.up    = true;  }, 'keydown');
-Mousetrap.bind('up',    function() { kb.up    = false; }, 'keyup');
-Mousetrap.bind('down',  function() { kb.down  = true;  }, 'keydown');
-Mousetrap.bind('down',  function() { kb.down  = false; }, 'keyup');
-Mousetrap.bind('right', function() { kb.right = true;  }, 'keydown');
-Mousetrap.bind('right', function() { kb.right = false; }, 'keyup');
-Mousetrap.bind('left',  function() { kb.left  = true;  }, 'keydown');
-Mousetrap.bind('left',  function() { kb.left  = false; }, 'keyup');
+
+canvasInput.bind('up', function() { kb.up = true; }, 'keydown');
+canvasInput.bind('up', function() { kb.up = false; }, 'keyup');
+canvasInput.bind('down', function() { kb.down = true; }, 'keydown');
+canvasInput.bind('down', function() { kb.down = false; }, 'keyup');
+canvasInput.bind('left', function() { kb.left = true; }, 'keydown');
+canvasInput.bind('left', function() { kb.left = false; }, 'keyup');
+canvasInput.bind('right', function() { kb.right = true; }, 'keydown');
+canvasInput.bind('right', function() { kb.right = false; }, 'keyup');
+
+module.exports = kb;
