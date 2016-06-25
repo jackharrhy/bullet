@@ -4,7 +4,7 @@ var kb = require('./keyboard');
 var bullet = require('./bullet');
 var pattern = require('./pattern');
 
-var func = require('.func');
+var func = require('./func');
 
 var menuCanvas = document.getElementById('menuCanvas');
 var m = menuCanvas.getContext('2d');
@@ -19,7 +19,7 @@ var g = gameCanvas.getContext('2d');
 
 var player = {
 	type: 'player',
-	pos: vec2(gameCanvas.width/2, gameCanvas.height/2),
+	pos: func.vec2(gameCanvas.width/2, gameCanvas.height/2),
 	radius: 5,
 	speed: 3,
 	deinc: 0.1,
@@ -74,7 +74,7 @@ var loop = {
 
 		draw.clear(g, gameCanvas);
 
-		func.applyPlayerSpeed(player);
+		player.applyPlayerSpeed(player);
 		update.swapArround(player);
 		draw.circle(g,player.pos, player.radius, player.color);
 
@@ -96,7 +96,7 @@ var loop = {
 				pos: 			randomBoundBullet(),
 				radius: 	6 + randInt(0,8),
 				color: 		randColor(),
-				speedpos: vec2(1 + (2 * Math.random()), 1 + (2 * Math.random())),
+				speedpos: func.vec2(1 + (2 * Math.random()), 1 + (2 * Math.random())),
 				pattern: pattern.wavyDown
 			});
 		}

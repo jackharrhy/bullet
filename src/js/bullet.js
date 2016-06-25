@@ -1,4 +1,5 @@
 var func = require('./func');
+var kb = require('./keyboard');
 
 module.exports = {
   addBullet: function(bullet) {
