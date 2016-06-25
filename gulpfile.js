@@ -51,7 +51,6 @@ gulp.task('browserify', function () {
 	.pipe(source('bullet.js'))
 	.pipe(buffer())
 	.pipe(sourcemaps.init({ loadMaps: true }))
-	.pipe(uglify())
 	.on('error', gutil.log)
 	.pipe(sourcemaps.write('./'))
 	.pipe(gulp.dest('./tmp/js'))
