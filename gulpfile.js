@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 
 var htmlmin = require('gulp-htmlmin');
+
 var less = require('gulp-less');
 var cssmin = require('gulp-cssmin');
 
@@ -14,29 +15,29 @@ var gutil = require('gulp-util');
 var browserSync = require('browser-sync').create();
 gulp.task('serve', ['pug','less','js'], function() {
 	browserSync.init({
-		server: './tmp'
+		server: './dev'
 	});
 
-	gulp.watch('src/*.pug', ['pug']);
-	gulp.watch('src/css/*.less', ['less']);
-	gulp.watch('src/js/*.js', ['browserify']);
+	gulp.watch('src/**/*.pug', ['pug']);
+	gulp.watch('src/css/**/*.less', ['less']);
+	gulp.watch('src/js/**/*.js', ['browserify']);
 });
 
 // Pug -> HTML
 var pug = require('gulp-pug');
 gulp.task('pug', function () {
-	return gulp.src('./src/*.pug')
+	return gulp.src('./src/**/*.pug')
 	.pipe(pug({}))
-	.pipe(gulp.dest('./tmp/'))
+	.pipe(gulp.dest('./dev/'))
 	.pipe(browserSync.stream());
 });
 
 // Less -> CSS
 var less = require('gulp-less');
 gulp.task('less', function () {
-	return gulp.src('./src/css/*.less')
+	return gulp.src('./src/css/**/*.less')
 	.pipe(less({}))
-	.pipe(gulp.dest('./tmp/css/'))
+	.pipe(gulp.dest('./dev/css/'))
 	.pipe(browserSync.stream());
 });
 
@@ -53,7 +54,7 @@ gulp.task('browserify', function () {
 	.pipe(sourcemaps.init({ loadMaps: true }))
 	.on('error', gutil.log)
 	.pipe(sourcemaps.write('./'))
-	.pipe(gulp.dest('./tmp/js'))
+	.pipe(gulp.dest('./dev/js'))
 	.pipe(browserSync.stream());
 });
 
@@ -63,21 +64,21 @@ gulp.task('prod', ['html','css','js']);
 
 // HTML -> Minified HTML
 gulp.task('html', function () {
-	return gulp.src('./tmp/*.html')
+	return gulp.src('./dev/**/*.html')
 	.pipe(htmlmin({ collapseWhitespace: true }))
 	.pipe(gulp.dest('./dist'));
 });
 
 // CSS -> Minified CSS
 gulp.task('css', function () {
-	return gulp.src('./tmp/css/*.css')
+	return gulp.src('./dev/css/**/*.css')
 	.pipe(cssmin())
 	.pipe(gulp.dest('./dist/css'));
 });
 
 // JS -> Minified JS
 gulp.task('js', function () {
-	return gulp.src('./tmp/js/*.js')
+	return gulp.src('./dev/js/**/*.js')
 	.pipe(uglify())
 	.pipe(gulp.dest('./dist/js'));
 });
