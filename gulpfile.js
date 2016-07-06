@@ -60,7 +60,7 @@ gulp.task('browserify', function () {
 
 gulp.task('default', ['serve']);
 
-gulp.task('prod', ['html','css','js']);
+gulp.task('dist', ['html','css','js']);
 
 // HTML -> Minified HTML
 gulp.task('html', function () {
