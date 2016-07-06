@@ -21,6 +21,21 @@ function squareCheck(ent1, ent2) {
 	);
 }
 
+function limit1DVel(vel, maxVel) {
+	if(vel > 0) {
+		return vel >= maxVel ? maxVel : vel;
+	} else {
+		return vel <= -maxVel ? -maxVel: vel;
+	}
+}
+
+function limitVel(entity) {
+	return(vec2(
+		limit1DVel(entity.vel.x, entity.maxVel.x),
+		limit1DVel(entity.vel.y, entity.maxVel.y)
+	));
+}
+
 module.exports = {
 	create: function(frag) {
 		return {
@@ -50,21 +65,9 @@ module.exports = {
 	},
 	
 	move: function(entity) {
-		if(entity.vel.y > 0) {
-			entity.vel.y = entity.vel.y >= entity.maxVel.y ? entity.maxVel.y : entity.vel.y;
-			entity.pos.y += entity.vel.y;
-		} else {
-			entity.vel.y = entity.vel.y <= -entity.maxVel.y ? -entity.maxVel.y : entity.vel.y;
-			entity.pos.y += entity.vel.y;
-		}
-		
-		if(entity.vel.x > 0) {
-			entity.vel.x = entity.vel.x >= entity.maxVel.x ? entity.maxVel.x : entity.vel.x;
-			entity.pos.x += entity.vel.x;
-		} else {
-			entity.vel.x = entity.vel.x <= -entity.maxVel.x ? -entity.maxVel.x : entity.vel.x;
-			entity.pos.x += entity.vel.x;
-		}
+		entity.vel = limitVel(entity);
+
+		entity.pos = vec2.add(entity.pos, entity.vel);
 	},
 
 	moveWithKeyboard: function(entity, keyboard) {
