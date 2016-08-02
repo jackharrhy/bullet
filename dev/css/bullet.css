@@ -1,20 +1,22 @@
-html,
 body {
-  height: 100%;
   margin: 0;
 }
-#menu {
-  top: calc(40%);
-  left: calc(42%);
+#menuContainer {
   position: absolute;
-  z-index: 1;
-  height: 12.75em;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#menu {
   width: 16em;
-  background-color: #325868;
-  border-radius: 3px;
-  box-shadow: 3px 3px 10px #777;
-  font-family: helvetica;
+  height: 13em;
+  max-width: 50%;
+  background-color: #4682b4;
+  border-radius: 4px;
   text-align: center;
+  font-family: Helvetica, sans-serif;
   color: #f0f0f0;
 }
 #menu h1 {
@@ -22,26 +24,29 @@ body {
   font-size: 3em;
 }
 #menu h2 {
-  margin: 0 0 0.75em 0;
+  margin: 0 0 0.7em 0;
+}
+#menu button {
+  width: 8em;
+  height: 2.5em;
+  border: none;
+  outline: none;
+  background-color: #dcffdc;
+}
+#menu button:hover {
+  background-color: #b4ffb4;
 }
 #menu a {
   text-decoration: none;
-  color: #c8c8ff;
+  color: #dcdcff;
 }
 #menu a:hover {
-  color: #aaaaff;
-}
-#menu button {
-  height: 3em;
-  width: 10em;
-  border: none;
-  background-color: #c8ffc8;
-}
-#menu button:hover {
-  background-color: #96ff96;
+  color: #b4b4ff;
 }
 canvas {
+  z-index: -1;
   position: absolute;
+  top: 0;
   height: 100%;
   width: 100%;
 }

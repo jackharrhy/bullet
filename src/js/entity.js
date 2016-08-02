@@ -1,4 +1,4 @@
-var vec2 = require('./fab/vec2');
+var vec2 = require('./vec2');
 
 function pytha(pos1, pos2) {
 	return Math.sqrt(
@@ -24,16 +24,15 @@ function squareCheck(ent1, ent2) {
 function limit1DVel(vel, maxVel) {
 	if(vel > 0) {
 		return vel >= maxVel ? maxVel : vel;
-	} else {
-		return vel <= -maxVel ? -maxVel: vel;
 	}
+	return vel <= -maxVel ? -maxVel: vel;
 }
 
 function limitVel(entity) {
-	return(vec2(
-		limit1DVel(entity.vel.x, entity.maxVel.x),
-		limit1DVel(entity.vel.y, entity.maxVel.y)
-	));
+	return {
+		x: limit1DVel(entity.vel.x, entity.maxVel.x),
+		y: limit1DVel(entity.vel.y, entity.maxVel.y)
+	};
 }
 
 module.exports = {
@@ -42,21 +41,18 @@ module.exports = {
 			radius: frag.radius || 4,
 			color: frag.color || 'black',
 			
-			pos: frag.pos || vec2(0,0),
-			posOffset: frag.posOffset || vec2(0,0),
+			pos: frag.pos || {x: 0, y: 0},
+			posOffset: frag.posOffset || {x: 0, y: 0},
 			
-			vel: frag.vel || vec2(0,0),
-			maxVel: frag.maxVel || vec2(1,1),
+			vel: frag.vel || {x: 0, y: 0},
+			maxVel: frag.maxVel || {x: 0, y: 0},
 			
-			acel: frag.acel || vec2(0,0)
+			acel: frag.acel || {x: 0, y: 0}
 		};
 	},
 	
 	checkCollision: function(ent1, ent2) {
-		if(squareCheck(ent1, ent2) && distanceCheck(ent1, ent2)) {
-			return true;
-		}
-		return false;
+		return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
 	},
 
 	acel: function(entity) {

@@ -1159,205 +1159,170 @@ module.exports = function (e) {
 }
 
 },{}],34:[function(require,module,exports){
-var vec2 = require('./fab/vec2');
 var randInt = require('./fab/randInt');
 
 var canvas = document.getElementById('canvas');
 var c = canvas.getContext('2d');
 
 module.exports = {
-	getSize: function() {
-		return vec2(window.innerWidth, window.innerHeight);
+	getSize: function () {
+		return { x: window.innerWidth, y: window.innerHeight };
 	},
-	getCenter: function() {
-		return vec2(window.innerWidth/2, window.innerHeight/2);
+	getCenter: function () {
+		return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 	},
-	getRandomBoundPoint: function() {
-		if(Math.random() >= 0.5) {
-			return vec2(randInt(0,window.innerWidth),0);
-		} else {
-			return vec2(0,randInt(0,window.innerHeight));
+	getRandomBoundPoint: function () {
+		if (Math.random() >= 0.5) {
+			return { x: randInt(0, window.innerWidth), y: 0 };
 		}
+		return { x: 0, y: randInt(0, window.innerHeight) };
 	},
 
-	resize: function() {
+	resize: function () {
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 	},
 
-	circle: function(entity) {
+	circle: function (entity) {
 		c.fillStyle = entity.color;
 		c.beginPath();
-		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2*Math.PI);
+		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
 		c.fill();
 	},
-	clear: function() {
+	clear: function () {
 		c.fillStyle = 'white';
-		c.fillRect(0,0,canvas.width,canvas.height);
+		c.fillRect(0, 0, canvas.width, canvas.height);
 	},
 
-	text: function(pos,text,size,color) {
-		c.fillStyle = color
+	text: function (pos, text, size, color) {
+		c.fillStyle = color;
 		c.font = size.toString() + 'px Helvetica';
 		c.fillStyle(text, pos.x, pos.y);
 	}
 };
 
-},{"./fab/randInt":37,"./fab/vec2":38}],35:[function(require,module,exports){
-var vec2 = require('./fab/vec2');
+},{"./fab/randInt":37}],35:[function(require,module,exports){
+var vec2 = require('./vec2');
 
 function pytha(pos1, pos2) {
-	return Math.sqrt(
-		((pos1.x - pos2.x) * (pos1.x - pos2.x)) +
-		((pos1.y - pos2.y) * (pos1.y - pos2.y))
-	);
+	return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
 }
 
 function distanceCheck(ent1, ent2) {
 	var pythaSol = pytha(ent1.pos, ent2.pos);
-	return pythaSol < (ent1.radius + ent2.radius);
+	return pythaSol < ent1.radius + ent2.radius;
 }
 
 function squareCheck(ent1, ent2) {
-	return !(
-		(ent1.pos.x + ent1.radius) < (ent2.pos.x - ent2.radius) ||
-		(ent1.pos.y + ent1.radius) < (ent2.pos.y - ent2.radius) ||
-		(ent1.pos.x - ent1.radius) > (ent2.pos.x + ent2.radius) ||
-		(ent1.pos.y - ent1.radius) > (ent2.pos.y + ent2.radius)
-	);
+	return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
 }
 
 function limit1DVel(vel, maxVel) {
-	if(vel > 0) {
+	if (vel > 0) {
 		return vel >= maxVel ? maxVel : vel;
-	} else {
-		return vel <= -maxVel ? -maxVel: vel;
 	}
+	return vel <= -maxVel ? -maxVel : vel;
 }
 
 function limitVel(entity) {
-	return(vec2(
-		limit1DVel(entity.vel.x, entity.maxVel.x),
-		limit1DVel(entity.vel.y, entity.maxVel.y)
-	));
+	return {
+		x: limit1DVel(entity.vel.x, entity.maxVel.x),
+		y: limit1DVel(entity.vel.y, entity.maxVel.y)
+	};
 }
 
 module.exports = {
-	create: function(frag) {
+	create: function (frag) {
 		return {
 			radius: frag.radius || 4,
 			color: frag.color || 'black',
-			
-			pos: frag.pos || vec2(0,0),
-			posOffset: frag.posOffset || vec2(0,0),
-			
-			vel: frag.vel || vec2(0,0),
-			maxVel: frag.maxVel || vec2(1,1),
-			
-			acel: frag.acel || vec2(0,0)
+
+			pos: frag.pos || { x: 0, y: 0 },
+			posOffset: frag.posOffset || { x: 0, y: 0 },
+
+			vel: frag.vel || { x: 0, y: 0 },
+			maxVel: frag.maxVel || { x: 0, y: 0 },
+
+			acel: frag.acel || { x: 0, y: 0 }
 		};
 	},
-	
-	checkCollision: function(ent1, ent2) {
-		if(squareCheck(ent1, ent2) && distanceCheck(ent1, ent2)) {
-			return true;
-		}
-		return false;
+
+	checkCollision: function (ent1, ent2) {
+		return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
 	},
 
-	acel: function(entity) {
+	acel: function (entity) {
 		entity.vel.y += entity.acel.y;
 		entity.vel.x += entity.acel.x;
 	},
-	
-	move: function(entity) {
+
+	move: function (entity) {
 		entity.vel = limitVel(entity);
 
 		entity.pos = vec2.add(entity.pos, entity.vel);
 	},
 
-	moveWithKeyboard: function(entity, keyboard) {
-		if(keyboard.up) {
+	moveWithKeyboard: function (entity, keyboard) {
+		if (keyboard.up) {
 			entity.vel.y -= entity.acel.y;
 		}
-		if(keyboard.down) {
+		if (keyboard.down) {
 			entity.vel.y += entity.acel.y;
 		}
-		if(keyboard.left) {
+		if (keyboard.left) {
 			entity.vel.x -= entity.acel.x;
 		}
-		if(keyboard.right) {
+		if (keyboard.right) {
 			entity.vel.x += entity.acel.x;
 		}
-		
+
 		this.move(entity);
 	},
 
-	moveWithPlayer: function(entity, basePlayer) {
+	moveWithPlayer: function (entity, basePlayer) {
 		entity.pos = vec2.sub(basePlayer.pos, entity.posOffset);
 	},
-	
-	swapAround: function(entity, canvasSize) {
+
+	swapAround: function (entity, canvasSize) {
 		// Y Axis
-		if(entity.pos.y > canvasSize.y) {
+		if (entity.pos.y > canvasSize.y) {
 			entity.pos.y -= canvasSize.y;
-		}
-		else if(entity.pos.y < 0) {
+		} else if (entity.pos.y < 0) {
 			entity.pos.y += canvasSize.y;
 		}
-	
+
 		// X Axis
-		if(entity.pos.x > canvasSize.x) {
+		if (entity.pos.x > canvasSize.x) {
 			entity.pos.x -= canvasSize.x;
-		}
-		else if(entity.pos.x < 0) {
+		} else if (entity.pos.x < 0) {
 			entity.pos.x += canvasSize.x;
 		}
 	}
 };
 
-},{"./fab/vec2":38}],36:[function(require,module,exports){
-module.exports = function() {
-	return '#'+Math.random().toString(16).substr(-6);
+},{"./vec2":41}],36:[function(require,module,exports){
+module.exports = function () {
+	return '#' + Math.random().toString(16).substr(-6);
 };
 
 },{}],37:[function(require,module,exports){
-module.exports = function(min,max) {
+module.exports = function (min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 },{}],38:[function(require,module,exports){
-var vec2 = function(x,y) {
-	return { x: x, y: y };
-}
-
-vec2.add = function(firstVec, secondVec) {
-	return vec2(firstVec.x + secondVec.x,firstVec.y + secondVec.y);
-};
-
-vec2.sub = function(firstVec, secondVec) {
-	return vec2(firstVec.x - secondVec.x,firstVec.y - secondVec.y);
-};
-
-vec2.multi = function(firstVec, secondVec) {
-	return vec2(firstVec.x * secondVec.x,firstVec.y * secondVec.y);
-};
-
-module.exports = vec2;
-
-},{}],39:[function(require,module,exports){
 var update = require('./update');
 
 var menu = document.getElementById('menu');
 var startButton = document.getElementById('start');
 
-startButton.onclick = function() {
+startButton.onclick = function () {
 	menu.style.display = 'none';
 	update.renderLoop();
 	update.secondsLoop();
 };
 
-},{"./update":41}],40:[function(require,module,exports){
+},{"./update":40}],39:[function(require,module,exports){
 var Combokeys = require('combokeys');
 var canvasInput = new Combokeys(document.documentElement);
 
@@ -1365,19 +1330,35 @@ var kb = {
 	up: false, down: false, left: false, right: false
 };
 
-canvasInput.bind('up', function()    { kb.up = true;     }, 'keydown');
-canvasInput.bind('up', function()    { kb.up = false;    }, 'keyup');
-canvasInput.bind('down', function()  { kb.down = true;   }, 'keydown');
-canvasInput.bind('down', function()  { kb.down = false;  }, 'keyup');
-canvasInput.bind('left', function()  { kb.left = true;   }, 'keydown');
-canvasInput.bind('left', function()  { kb.left = false;  }, 'keyup');
-canvasInput.bind('right', function() { kb.right = true;  }, 'keydown');
-canvasInput.bind('right', function() { kb.right = false; }, 'keyup');
+canvasInput.bind('up', function () {
+	kb.up = true;
+}, 'keydown');
+canvasInput.bind('up', function () {
+	kb.up = false;
+}, 'keyup');
+canvasInput.bind('down', function () {
+	kb.down = true;
+}, 'keydown');
+canvasInput.bind('down', function () {
+	kb.down = false;
+}, 'keyup');
+canvasInput.bind('left', function () {
+	kb.left = true;
+}, 'keydown');
+canvasInput.bind('left', function () {
+	kb.left = false;
+}, 'keyup');
+canvasInput.bind('right', function () {
+	kb.right = true;
+}, 'keydown');
+canvasInput.bind('right', function () {
+	kb.right = false;
+}, 'keyup');
 
 module.exports = kb;
 
-},{"combokeys":1}],41:[function(require,module,exports){
-var vec2 = require('./fab/vec2');
+},{"combokeys":1}],40:[function(require,module,exports){
+var vec2 = require('./vec2.js');
 var randInt = require('./fab/randInt');
 var randHex = require('./fab/randHex');
 
@@ -1399,15 +1380,14 @@ var basePlayer = entity.create({
 
 	pos: canvas.getCenter(),
 
-	maxVel: vec2(3,3),
-	acel: vec2(0.4,0.4)
+	maxVel: { x: 3, y: 3 },
+	acel: { x: 0.4, y: 0.4 }
 });
 
 function checkCollision(playerEntity) {
-	for(var b=0, bLen=bulletArray.length; b < bLen; b++) {
-		if(bulletArray[b] && entity.checkCollision(playerEntity,bulletArray[b])) {
-			var bulletToMove = Object.create(bulletArray[b]);
-			var copyOfPlayer = Object.create(playerEntity);
+	for (var b = 0, bLen = bulletArray.length; b < bLen; b++) {
+		if (bulletArray[b] && entity.checkCollision(playerEntity, bulletArray[b])) {
+			let bulletToMove = bulletArray[b];
 
 			playerArray.push(entity.create({
 				radius: bulletToMove.radius,
@@ -1416,73 +1396,95 @@ function checkCollision(playerEntity) {
 				posOffset: vec2.sub(basePlayer.pos, bulletToMove.pos)
 			}));
 
-			canvas.circle(bulletArray[b]);
-			delete bulletArray[b];
+			bulletArray.splice(b, 1);
 		}
 	}
 }
 
-module.exports = {
-	renderLoop: function() {
-		frame++;
-		canvas.clear();
+function renderLoop() {
+	frame++;
+	canvas.clear();
 
-		entity.moveWithKeyboard(basePlayer, keyboard);
-		entity.swapAround(basePlayer, canvas.getSize());
-		canvas.circle(basePlayer);
-		checkCollision(basePlayer);
+	var canvasSize = canvas.getSize();
 
-		for(var p=0, pLen=playerArray.length; p < pLen; p++) {
-			var playerEntity = playerArray[p];
+	for (var i = 0; i < bulletArray.length; i++) {
+		if (bulletArray[i]) {
+			let bulletEntity = bulletArray[i];
 
-			entity.moveWithPlayer(playerEntity, basePlayer);
-			entity.swapAround(playerEntity, canvas.getSize());
+			entity.move(bulletEntity);
+			entity.acel(bulletEntity);
+			entity.swapAround(bulletEntity, canvasSize);
 
-			canvas.circle(playerEntity);
-			checkCollision(playerEntity);
+			canvas.circle(bulletEntity);
 		}
-
-		for(var i=0, len=bulletArray.length; i < len; i++) {
-			if(bulletArray[i]) {
-				var bulletEntity = bulletArray[i];
-
-				entity.move(bulletEntity);
-				entity.acel(bulletEntity);
-				entity.swapAround(bulletEntity, canvas.getSize());
-
-				canvas.circle(bulletEntity);
-			}
-		}
-
-		requestAnimationFrame(this.renderLoop.bind(this));
-	},
-
-	secondsLoop: function() {
-		seconds++;
-
-		if(bulletArray.length <= 130) {
-			bulletArray.push(entity.create({
-				radius: randInt(7,14),
-				color: randHex(),
-
-				pos: canvas.getRandomBoundPoint(),
-				maxVel: vec2(
-					((Math.random() * seconds/7) + 1),
-					((Math.random() * seconds/7) + 1)
-				),
-				acel: vec2(
-					Math.random() < 0.5 ? -0.005 : 0.005,
-					Math.random() < 0.5 ? -0.005 : 0.005 
-				)
-			}));
-		}
-
-		setTimeout(this.secondsLoop.bind(this), 1000);
 	}
+
+	entity.moveWithKeyboard(basePlayer, keyboard);
+	entity.swapAround(basePlayer, canvasSize);
+	canvas.circle(basePlayer);
+	checkCollision(basePlayer);
+
+	for (var p = 0; p < playerArray.length; p++) {
+		let playerEntity = playerArray[p];
+
+		entity.moveWithPlayer(playerEntity, basePlayer);
+		entity.swapAround(playerEntity, canvasSize);
+
+		canvas.circle(playerEntity);
+		checkCollision(playerEntity);
+	}
+
+	window.requestAnimationFrame(renderLoop);
+}
+
+function secondsLoop() {
+	seconds++;
+
+	if (bulletArray.length <= 130) {
+		bulletArray.push(entity.create({
+			radius: randInt(7, 14),
+			color: randHex(),
+
+			pos: canvas.getRandomBoundPoint(),
+			maxVel: {
+				x: Math.random() * seconds / 7 + 1,
+				y: Math.random() * seconds / 7 + 1
+			},
+			acel: {
+				x: Math.random() < 0.5 ? -0.005 : 0.005,
+				y: Math.random() < 0.5 ? -0.005 : 0.005
+			}
+		}));
+	}
+
+	setTimeout(secondsLoop, 1000);
+}
+
+module.exports = {
+	renderLoop: renderLoop,
+	secondsLoop: secondsLoop
 };
 
+},{"./canvas":34,"./entity":35,"./fab/randHex":36,"./fab/randInt":37,"./keyboard":39,"./vec2.js":41}],41:[function(require,module,exports){
+function add(firstVec, secondVec) {
+	return { x: firstVec.x + secondVec.x, y: firstVec.y + secondVec.y };
+}
 
-},{"./canvas":34,"./entity":35,"./fab/randHex":36,"./fab/randInt":37,"./fab/vec2":38,"./keyboard":40}]},{},[39])
+function sub(firstVec, secondVec) {
+	return { x: firstVec.x - secondVec.x, y: firstVec.y - secondVec.y };
+}
+
+function multi(firstVec, secondVec) {
+	return { x: firstVec.x * secondVec.x, y: firstVec.y * secondVec.y };
+}
+
+module.exports = {
+	add: add,
+	sub: sub,
+	multi: multi
+};
+
+},{}]},{},[38])
 
 
 //# sourceMappingURL=bullet.js.map

@@ -1,4 +1,4 @@
-var vec2 = require('./fab/vec2');
+var vec2 = require('./vec2.js');
 var randInt = require('./fab/randInt');
 var randHex = require('./fab/randHex');
 
@@ -20,15 +20,14 @@ var basePlayer = entity.create({
 
 	pos: canvas.getCenter(),
 
-	maxVel: vec2(3,3),
-	acel: vec2(0.4,0.4)
+	maxVel: {x: 3, y: 3},
+	acel: {x: 0.4, y: 0.4}
 });
 
 function checkCollision(playerEntity) {
 	for(var b=0, bLen=bulletArray.length; b < bLen; b++) {
 		if(bulletArray[b] && entity.checkCollision(playerEntity,bulletArray[b])) {
-			var bulletToMove = Object.create(bulletArray[b]);
-			var copyOfPlayer = Object.create(playerEntity);
+			let bulletToMove = bulletArray[b];
 
 			playerArray.push(entity.create({
 				radius: bulletToMove.radius,
@@ -37,68 +36,72 @@ function checkCollision(playerEntity) {
 				posOffset: vec2.sub(basePlayer.pos, bulletToMove.pos)
 			}));
 
-			canvas.circle(bulletArray[b]);
-			delete bulletArray[b];
+			bulletArray.splice(b,1);
 		}
 	}
 }
 
-module.exports = {
-	renderLoop: function() {
-		frame++;
-		canvas.clear();
+function renderLoop() {
+	frame++;
+	canvas.clear();
 
-		entity.moveWithKeyboard(basePlayer, keyboard);
-		entity.swapAround(basePlayer, canvas.getSize());
-		canvas.circle(basePlayer);
-		checkCollision(basePlayer);
+	var canvasSize = canvas.getSize();
 
-		for(var p=0, pLen=playerArray.length; p < pLen; p++) {
-			var playerEntity = playerArray[p];
+	for(var i=0; i < bulletArray.length; i++) {
+		if(bulletArray[i]) {
+			let bulletEntity = bulletArray[i];
 
-			entity.moveWithPlayer(playerEntity, basePlayer);
-			entity.swapAround(playerEntity, canvas.getSize());
+			entity.move(bulletEntity);
+			entity.acel(bulletEntity);
+			entity.swapAround(bulletEntity, canvasSize);
 
-			canvas.circle(playerEntity);
-			checkCollision(playerEntity);
+			canvas.circle(bulletEntity);
 		}
-
-		for(var i=0, len=bulletArray.length; i < len; i++) {
-			if(bulletArray[i]) {
-				var bulletEntity = bulletArray[i];
-
-				entity.move(bulletEntity);
-				entity.acel(bulletEntity);
-				entity.swapAround(bulletEntity, canvas.getSize());
-
-				canvas.circle(bulletEntity);
-			}
-		}
-
-		requestAnimationFrame(this.renderLoop.bind(this));
-	},
-
-	secondsLoop: function() {
-		seconds++;
-
-		if(bulletArray.length <= 130) {
-			bulletArray.push(entity.create({
-				radius: randInt(7,14),
-				color: randHex(),
-
-				pos: canvas.getRandomBoundPoint(),
-				maxVel: vec2(
-					((Math.random() * seconds/7) + 1),
-					((Math.random() * seconds/7) + 1)
-				),
-				acel: vec2(
-					Math.random() < 0.5 ? -0.005 : 0.005,
-					Math.random() < 0.5 ? -0.005 : 0.005 
-				)
-			}));
-		}
-
-		setTimeout(this.secondsLoop.bind(this), 1000);
 	}
+
+	entity.moveWithKeyboard(basePlayer, keyboard);
+	entity.swapAround(basePlayer, canvasSize);
+	canvas.circle(basePlayer);
+	checkCollision(basePlayer);
+
+	for(var p=0; p < playerArray.length; p++) {
+		let playerEntity = playerArray[p];
+
+		entity.moveWithPlayer(playerEntity, basePlayer);
+		entity.swapAround(playerEntity, canvasSize);
+
+		canvas.circle(playerEntity);
+		checkCollision(playerEntity);
+	}
+
+	window.requestAnimationFrame(renderLoop);
+}
+
+function secondsLoop() {
+	seconds++;
+
+	if(bulletArray.length <= 130) {
+		bulletArray.push(entity.create({
+			radius: randInt(7,14),
+			color: randHex(),
+
+			pos: canvas.getRandomBoundPoint(),
+			maxVel: {
+				x: ((Math.random() * seconds/7) + 1),
+				y: ((Math.random() * seconds/7) + 1)
+			},
+			acel: {
+				x: Math.random() < 0.5 ? -0.005 : 0.005,
+				y: Math.random() < 0.5 ? -0.005 : 0.005 
+			}
+		}));
+	}
+
+	setTimeout(secondsLoop, 1000);
+}
+
+module.exports = {
+	renderLoop: renderLoop,
+	secondsLoop: secondsLoop
 };
 

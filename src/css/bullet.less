@@ -1,25 +1,26 @@
-html, body {
-	height: 100%;
+body {
 	margin: 0;
 }
 
-#menu {
-	top: calc(50% - 10em);
-	left: calc(50% - 8em);
-
+#menuContainer {
 	position: absolute;
-	z-index: 1;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 
-	height: 12.75em;
+#menu {
 	width: 16em;
-	background-color: #325868;
+	height: 13em;
+	max-width: 50%;
 
-	border-radius: 3px;
-	box-shadow: 3px 3px 10px #777;
+	background-color: #4682b4;
+	border-radius: 4px;
 
-	font-family: helvetica;
 	text-align: center;
-
+	font-family: Helvetica, sans-serif;
 	color: rgb(240,240,240);
 
 	h1 {
@@ -27,30 +28,35 @@ html, body {
 		font-size: 3em;
 	}
 	h2 {
-		margin: 0 0 0.75em 0;
+		margin: 0 0 0.7em 0;
+	}
+
+	button {
+		width: 8em;
+		height: 2.5em;
+
+		border: none;
+		outline: none;
+
+		background-color: rgb(220,255,220);;
+		&:hover {
+			background-color: rgb(180,255,180);;
+		}
 	}
 
 	a {
 		text-decoration: none;
-		color: rgb(200,200,255);
+		color: rgb(220,220,255);
 		&:hover {
-			color: rgb(170,170,255);
-		}
-	}
-
-	button {
-		height: 3em;
-		width: 10em;
-		border: none;
-		background-color: rgb(200,255,200);
-		&:hover {
-			background-color: rgb(150,255,150);
+			color: rgb(180,180,255);
 		}
 	}
 }
 
 canvas {
+	z-index: -1;
 	position: absolute;
+	top: 0;
 	height: 100%;
 	width: 100%;
 }

@@ -1,4 +1,3 @@
-var vec2 = require('./fab/vec2');
 var randInt = require('./fab/randInt');
 
 var canvas = document.getElementById('canvas');
@@ -6,17 +5,16 @@ var c = canvas.getContext('2d');
 
 module.exports = {
 	getSize: function() {
-		return vec2(window.innerWidth, window.innerHeight);
+		return { x: window.innerWidth, y: window.innerHeight };
 	},
 	getCenter: function() {
-		return vec2(window.innerWidth/2, window.innerHeight/2);
+		return { x: window.innerWidth/2, y: window.innerHeight/2 };
 	},
 	getRandomBoundPoint: function() {
 		if(Math.random() >= 0.5) {
-			return vec2(randInt(0,window.innerWidth),0);
-		} else {
-			return vec2(0,randInt(0,window.innerHeight));
+			return { x: randInt(0,window.innerWidth), y: 0 };
 		}
+		return { x: 0, y: randInt(0,window.innerHeight) };
 	},
 
 	resize: function() {
@@ -36,7 +34,7 @@ module.exports = {
 	},
 
 	text: function(pos,text,size,color) {
-		c.fillStyle = color
+		c.fillStyle = color;
 		c.font = size.toString() + 'px Helvetica';
 		c.fillStyle(text, pos.x, pos.y);
 	}
