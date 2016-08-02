@@ -1,1 +1,1490 @@
-!function e(t,r,n){function o(s,c){if(!r[s]){if(!t[s]){var p="function"==typeof require&&require;if(!c&&p)return p(s,!0);if(i)return i(s,!0);var a=new Error("Cannot find module '"+s+"'");throw a.code="MODULE_NOT_FOUND",a}var u=r[s]={exports:{}};t[s][0].call(u.exports,function(e){var r=t[s][1][e];return o(r?r:e)},u,u.exports,e,t,r,n)}return r[s].exports}for(var i="function"==typeof require&&require,s=0;s<n.length;s++)o(n[s]);return o}({1:[function(e,t,r){"use strict";t.exports=function(e){var t=this,r=t.constructor;return t.callbacks={},t.directMap={},t.sequenceLevels={},t.resetTimer,t.ignoreNextKeyup=!1,t.ignoreNextKeypress=!1,t.nextExpectedAction=!1,t.element=e,t.addEvents(),r.instances.push(t),t},t.exports.prototype.bind=e("./prototype/bind"),t.exports.prototype.bindMultiple=e("./prototype/bindMultiple"),t.exports.prototype.unbind=e("./prototype/unbind"),t.exports.prototype.trigger=e("./prototype/trigger"),t.exports.prototype.reset=e("./prototype/reset.js"),t.exports.prototype.stopCallback=e("./prototype/stopCallback"),t.exports.prototype.handleKey=e("./prototype/handleKey"),t.exports.prototype.addEvents=e("./prototype/addEvents"),t.exports.prototype.bindSingle=e("./prototype/bindSingle"),t.exports.prototype.getKeyInfo=e("./prototype/getKeyInfo"),t.exports.prototype.pickBestAction=e("./prototype/pickBestAction"),t.exports.prototype.getReverseMap=e("./prototype/getReverseMap"),t.exports.prototype.getMatches=e("./prototype/getMatches"),t.exports.prototype.resetSequences=e("./prototype/resetSequences"),t.exports.prototype.fireCallback=e("./prototype/fireCallback"),t.exports.prototype.bindSequence=e("./prototype/bindSequence"),t.exports.prototype.resetSequenceTimer=e("./prototype/resetSequenceTimer"),t.exports.prototype.detach=e("./prototype/detach"),t.exports.instances=[],t.exports.reset=e("./reset"),t.exports.REVERSE_MAP=null},{"./prototype/addEvents":2,"./prototype/bind":3,"./prototype/bindMultiple":4,"./prototype/bindSequence":5,"./prototype/bindSingle":6,"./prototype/detach":7,"./prototype/fireCallback":9,"./prototype/getKeyInfo":10,"./prototype/getMatches":11,"./prototype/getReverseMap":12,"./prototype/handleKey":13,"./prototype/pickBestAction":16,"./prototype/reset.js":17,"./prototype/resetSequenceTimer":18,"./prototype/resetSequences":19,"./prototype/stopCallback":20,"./prototype/trigger":21,"./prototype/unbind":22,"./reset":23}],2:[function(e,t,r){"use strict";t.exports=function(){var t=this,r=e("./dom-event"),n=t.element;t.eventHandler=e("./handleKeyEvent").bind(t),r(n,"keypress",t.eventHandler),r(n,"keydown",t.eventHandler),r(n,"keyup",t.eventHandler)}},{"./dom-event":8,"./handleKeyEvent":14}],3:[function(e,t,r){"use strict";t.exports=function(e,t,r){var n=this;return e=e instanceof Array?e:[e],n.bindMultiple(e,t,r),n}},{}],4:[function(e,t,r){"use strict";t.exports=function(e,t,r){for(var n=this,o=0;o<e.length;++o)n.bindSingle(e[o],t,r)}},{}],5:[function(e,t,r){"use strict";t.exports=function(t,r,n,o){function i(e){return function(){c.nextExpectedAction=e,++c.sequenceLevels[t],c.resetSequenceTimer()}}function s(r){var i;c.fireCallback(n,r,t),"keyup"!==o&&(i=e("../../helpers/characterFromEvent"),c.ignoreNextKeyup=i(r)),setTimeout(function(){c.resetSequences()},10)}var c=this;c.sequenceLevels[t]=0;for(var p=0;p<r.length;++p){var a=p+1===r.length,u=a?s:i(o||c.getKeyInfo(r[p+1]).action);c.bindSingle(r[p],u,o,t,p)}}},{"../../helpers/characterFromEvent":24}],6:[function(e,t,r){"use strict";t.exports=function(e,t,r,n,o){var i=this;i.directMap[e+":"+r]=t,e=e.replace(/\s+/g," ");var s,c=e.split(" ");return c.length>1?void i.bindSequence(e,c,t,r):(s=i.getKeyInfo(e,r),i.callbacks[s.key]=i.callbacks[s.key]||[],i.getMatches(s.key,s.modifiers,{type:s.action},n,e,o),void i.callbacks[s.key][n?"unshift":"push"]({callback:t,modifiers:s.modifiers,action:s.action,seq:n,level:o,combo:e}))}},{}],7:[function(e,t,r){var n=e("./dom-event").off;t.exports=function(){var e=this,t=e.element;n(t,"keypress",e.eventHandler),n(t,"keydown",e.eventHandler),n(t,"keyup",e.eventHandler)}},{"./dom-event":8}],8:[function(e,t,r){function n(e,t,r,n){return!e.addEventListener&&(t="on"+t),(e.addEventListener||e.attachEvent).call(e,t,r,n),r}function o(e,t,r,n){return!e.removeEventListener&&(t="on"+t),(e.removeEventListener||e.detachEvent).call(e,t,r,n),r}t.exports=n,t.exports.on=n,t.exports.off=o},{}],9:[function(e,t,r){"use strict";t.exports=function(t,r,n,o){var i,s,c=this;c.stopCallback(r,r.target||r.srcElement,n,o)||t(r,n)===!1&&(i=e("../../helpers/preventDefault"),i(r),(s=e("../../helpers/stopPropagation"))(r))}},{"../../helpers/preventDefault":28,"../../helpers/stopPropagation":33}],10:[function(e,t,r){"use strict";t.exports=function(t,r){var n,o,i,s,c,p,a,u=this,l=[];for(n=e("../../helpers/keysFromString"),o=n(t),c=e("../../helpers/special-aliases"),p=e("../../helpers/shift-map"),a=e("../../helpers/isModifier"),s=0;s<o.length;++s)i=o[s],c[i]&&(i=c[i]),r&&"keypress"!==r&&p[i]&&(i=p[i],l.push("shift")),a(i)&&l.push(i);return r=u.pickBestAction(i,l,r),{key:i,modifiers:l,action:r}}},{"../../helpers/isModifier":26,"../../helpers/keysFromString":27,"../../helpers/shift-map":29,"../../helpers/special-aliases":30}],11:[function(e,t,r){"use strict";t.exports=function(t,r,n,o,i,s){var c,p,a,u,l=this,f=[],d=n.type;if("keypress"===d&&(!n.code||"Arrow"!==n.code.slice(0,5))){var y=l.callbacks["any-character"]||[];y.forEach(function(e){f.push(e)})}if(!l.callbacks[t])return f;for(a=e("../../helpers/isModifier"),"keyup"===d&&a(t)&&(r=[t]),c=0;c<l.callbacks[t].length;++c)if(p=l.callbacks[t][c],(o||!p.seq||l.sequenceLevels[p.seq]===p.level)&&d===p.action&&(u=e("./modifiersMatch"),"keypress"===d&&!n.metaKey&&!n.ctrlKey||u(r,p.modifiers))){var h=!o&&p.combo===i,v=o&&p.seq===o&&p.level===s;(h||v)&&l.callbacks[t].splice(c,1),f.push(p)}return f}},{"../../helpers/isModifier":26,"./modifiersMatch":15}],12:[function(e,t,r){"use strict";t.exports=function(){var t,r=this,n=r.constructor;if(!n.REVERSE_MAP){n.REVERSE_MAP={},t=e("../../helpers/special-keys-map");for(var o in t)o>95&&o<112||t.hasOwnProperty(o)&&(n.REVERSE_MAP[t[o]]=o)}return n.REVERSE_MAP}},{"../../helpers/special-keys-map":32}],13:[function(e,t,r){"use strict";t.exports=function(t,r,n){var o,i,s,c,p=this,a={},u=0,l=!1;for(o=p.getMatches(t,r,n),i=0;i<o.length;++i)o[i].seq&&(u=Math.max(u,o[i].level));for(i=0;i<o.length;++i)if(o[i].seq){if(o[i].level!==u)continue;l=!0,a[o[i].seq]=1,p.fireCallback(o[i].callback,n,o[i].combo,o[i].seq)}else l||p.fireCallback(o[i].callback,n,o[i].combo);c="keypress"===n.type&&p.ignoreNextKeypress,s=e("../../helpers/isModifier"),n.type!==p.nextExpectedAction||s(t)||c||p.resetSequences(a),p.ignoreNextKeypress=l&&"keydown"===n.type}},{"../../helpers/isModifier":26}],14:[function(e,t,r){"use strict";t.exports=function(t){var r,n,o=this;"number"!=typeof t.which&&(t.which=t.keyCode),r=e("../../helpers/characterFromEvent");var i=r(t);if(i){if("keyup"===t.type&&o.ignoreNextKeyup===i)return void(o.ignoreNextKeyup=!1);n=e("../../helpers/eventModifiers"),o.handleKey(i,n(t),t)}}},{"../../helpers/characterFromEvent":24,"../../helpers/eventModifiers":25}],15:[function(e,t,r){"use strict";t.exports=function(e,t){return e.sort().join(",")===t.sort().join(",")}},{}],16:[function(e,t,r){"use strict";t.exports=function(e,t,r){var n=this;return r||(r=n.getReverseMap()[e]?"keydown":"keypress"),"keypress"===r&&t.length&&(r="keydown"),r}},{}],17:[function(e,t,r){"use strict";t.exports=function(){var e=this;return e.callbacks={},e.directMap={},this}},{}],18:[function(e,t,r){"use strict";t.exports=function(){var e=this;clearTimeout(e.resetTimer),e.resetTimer=setTimeout(function(){e.resetSequences()},1e3)}},{}],19:[function(e,t,r){"use strict";t.exports=function(e){var t=this;e=e||{};var r,n=!1;for(r in t.sequenceLevels)e[r]?n=!0:t.sequenceLevels[r]=0;n||(t.nextExpectedAction=!1)}},{}],20:[function(e,t,r){"use strict";t.exports=function(e,t){if((" "+t.className+" ").indexOf(" combokeys ")>-1)return!1;var r=t.tagName.toLowerCase();return"input"===r||"select"===r||"textarea"===r||t.isContentEditable}},{}],21:[function(e,t,r){"use strict";t.exports=function(e,t){var r=this;return r.directMap[e+":"+t]&&r.directMap[e+":"+t]({},e),this}},{}],22:[function(e,t,r){"use strict";t.exports=function(e,t){var r=this;return r.bind(e,function(){},t)}},{}],23:[function(e,t,r){"use strict";t.exports=function(){var e=this;e.instances.forEach(function(e){e.reset()})}},{}],24:[function(e,t,r){"use strict";t.exports=function(t){var r,n;if(r=e("./special-keys-map"),n=e("./special-characters-map"),"keypress"===t.type){var o=String.fromCharCode(t.which);return t.shiftKey||(o=o.toLowerCase()),o}return r[t.which]?r[t.which]:n[t.which]?n[t.which]:String.fromCharCode(t.which).toLowerCase()}},{"./special-characters-map":31,"./special-keys-map":32}],25:[function(e,t,r){"use strict";t.exports=function(e){var t=[];return e.shiftKey&&t.push("shift"),e.altKey&&t.push("alt"),e.ctrlKey&&t.push("ctrl"),e.metaKey&&t.push("meta"),t}},{}],26:[function(e,t,r){"use strict";t.exports=function(e){return"shift"===e||"ctrl"===e||"alt"===e||"meta"===e}},{}],27:[function(e,t,r){"use strict";t.exports=function(e){return"+"===e?["+"]:e.split("+")}},{}],28:[function(e,t,r){"use strict";t.exports=function(e){return e.preventDefault?void e.preventDefault():void(e.returnValue=!1)}},{}],29:[function(e,t,r){"use strict";t.exports={"~":"`","!":"1","@":"2","#":"3",$:"4","%":"5","^":"6","&":"7","*":"8","(":"9",")":"0",_:"-","+":"=",":":";",'"':"'","<":",",">":".","?":"/","|":"\\"}},{}],30:[function(e,t,r){"use strict";t.exports={option:"alt",command:"meta","return":"enter",escape:"esc",mod:/Mac|iPod|iPhone|iPad/.test(navigator.platform)?"meta":"ctrl"}},{}],31:[function(e,t,r){"use strict";t.exports={106:"*",107:"+",109:"-",110:".",111:"/",186:";",187:"=",188:",",189:"-",190:".",191:"/",192:"`",219:"[",220:"\\",221:"]",222:"'"}},{}],32:[function(e,t,r){"use strict";t.exports={8:"backspace",9:"tab",13:"enter",16:"shift",17:"ctrl",18:"alt",20:"capslock",27:"esc",32:"space",33:"pageup",34:"pagedown",35:"end",36:"home",37:"left",38:"up",39:"right",40:"down",45:"ins",46:"del",91:"meta",93:"meta",187:"plus",189:"minus",224:"meta"};for(var n=1;n<20;++n)t.exports[111+n]="f"+n;for(n=0;n<=9;++n)t.exports[n+96]=n},{}],33:[function(e,t,r){"use strict";t.exports=function(e){return e.stopPropagation?void e.stopPropagation():void(e.cancelBubble=!0)}},{}],34:[function(e,t,r){var n=e("./fab/vec2"),o=e("./fab/randInt"),i=document.getElementById("canvas"),s=i.getContext("2d");t.exports={getSize:function(){return n(window.innerWidth,window.innerHeight)},getCenter:function(){return n(window.innerWidth/2,window.innerHeight/2)},getRandomBoundPoint:function(){return Math.random()>=.5?n(o(0,window.innerWidth),0):n(0,o(0,window.innerHeight))},resize:function(){i.width=window.innerWidth,i.height=window.innerHeight},circle:function(e){s.fillStyle=e.color,s.beginPath(),s.arc(e.pos.x,e.pos.y,e.radius,0,2*Math.PI),s.fill()},clear:function(){s.fillStyle="white",s.fillRect(0,0,i.width,i.height)},text:function(e,t,r,n){s.fillStyle=n,s.font=r.toString()+"px Helvetica",s.fillStyle(t,e.x,e.y)}}},{"./fab/randInt":37,"./fab/vec2":38}],35:[function(e,t,r){function n(e,t){return Math.sqrt((e.x-t.x)*(e.x-t.x)+(e.y-t.y)*(e.y-t.y))}function o(e,t){var r=n(e.pos,t.pos);return r<e.radius+t.radius}function i(e,t){return!(e.pos.x+e.radius<t.pos.x-t.radius||e.pos.y+e.radius<t.pos.y-t.radius||e.pos.x-e.radius>t.pos.x+t.radius||e.pos.y-e.radius>t.pos.y+t.radius)}function s(e,t){return e>0?e>=t?t:e:e<=-t?-t:e}function c(e){return p(s(e.vel.x,e.maxVel.x),s(e.vel.y,e.maxVel.y))}var p=e("./fab/vec2");t.exports={create:function(e){return{radius:e.radius||4,color:e.color||"black",pos:e.pos||p(0,0),posOffset:e.posOffset||p(0,0),vel:e.vel||p(0,0),maxVel:e.maxVel||p(1,1),acel:e.acel||p(0,0)}},checkCollision:function(e,t){return i(e,t)&&o(e,t)},acel:function(e){e.vel.y+=e.acel.y,e.vel.x+=e.acel.x},move:function(e){e.vel=c(e),e.pos=p.add(e.pos,e.vel)},moveWithKeyboard:function(e,t){t.up&&(e.vel.y-=e.acel.y),t.down&&(e.vel.y+=e.acel.y),t.left&&(e.vel.x-=e.acel.x),t.right&&(e.vel.x+=e.acel.x),this.move(e)},moveWithPlayer:function(e,t){e.pos=p.sub(t.pos,e.posOffset)},swapAround:function(e,t){e.pos.y>t.y?e.pos.y-=t.y:e.pos.y<0&&(e.pos.y+=t.y),e.pos.x>t.x?e.pos.x-=t.x:e.pos.x<0&&(e.pos.x+=t.x)}}},{"./fab/vec2":38}],36:[function(e,t,r){t.exports=function(){return"#"+Math.random().toString(16).substr(-6)}},{}],37:[function(e,t,r){t.exports=function(e,t){return Math.floor(Math.random()*(t-e+1)+e)}},{}],38:[function(e,t,r){var n=function(e,t){return{x:e,y:t}};n.add=function(e,t){return n(e.x+t.x,e.y+t.y)},n.sub=function(e,t){return n(e.x-t.x,e.y-t.y)},n.multi=function(e,t){return n(e.x*t.x,e.y*t.y)},t.exports=n},{}],39:[function(e,t,r){var n=e("./update"),o=document.getElementById("menu"),i=document.getElementById("start");i.onclick=function(){o.style.display="none",n.renderLoop(),n.secondsLoop()}},{"./update":41}],40:[function(e,t,r){var n=e("combokeys"),o=new n(document.documentElement),i={up:!1,down:!1,left:!1,right:!1};o.bind("up",function(){i.up=!0},"keydown"),o.bind("up",function(){i.up=!1},"keyup"),o.bind("down",function(){i.down=!0},"keydown"),o.bind("down",function(){i.down=!1},"keyup"),o.bind("left",function(){i.left=!0},"keydown"),o.bind("left",function(){i.left=!1},"keyup"),o.bind("right",function(){i.right=!0},"keydown"),o.bind("right",function(){i.right=!1},"keyup"),t.exports=i},{combokeys:1}],41:[function(e,t,r){function n(e){for(var t=0,r=d.length;t<r;t++)if(d[t]&&a.checkCollision(e,d[t])){var n=d[t];f.push(a.create({radius:n.radius,color:n.color,pos:n.pos,posOffset:s.sub(v.pos,n.pos)})),d.splice(t,1)}}function o(){y++,u.clear();for(var e=u.getSize(),t=0;t<d.length;t++)if(d[t]){var r=d[t];a.move(r),a.acel(r),a.swapAround(r,e),u.circle(r)}a.moveWithKeyboard(v,l),a.swapAround(v,e),u.circle(v),n(v);for(var i=0;i<f.length;i++){var s=f[i];a.moveWithPlayer(s,v),a.swapAround(s,e),u.circle(s),n(s)}window.requestAnimationFrame(o)}function i(){h++,d.length<=130&&d.push(a.create({radius:c(7,14),color:p(),pos:u.getRandomBoundPoint(),maxVel:s(Math.random()*h/7+1,Math.random()*h/7+1),acel:s(Math.random()<.5?-.005:.005,Math.random()<.5?-.005:.005)})),setTimeout(i,1e3)}var s=e("./fab/vec2"),c=e("./fab/randInt"),p=e("./fab/randHex"),a=e("./entity"),u=e("./canvas"),l=e("./keyboard"),f=[],d=[],y=-1,h=-1;u.resize();var v=a.create({radius:5,color:"red",pos:u.getCenter(),maxVel:s(3,3),acel:s(.4,.4)});t.exports={renderLoop:o,secondsLoop:i}},{"./canvas":34,"./entity":35,"./fab/randHex":36,"./fab/randInt":37,"./fab/vec2":38,"./keyboard":40}]},{},[39]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+module.exports = function (element) {
+  var self = this
+  var Combokeys = self.constructor
+
+  /**
+   * a list of all the callbacks setup via Combokeys.bind()
+   *
+   * @type {Object}
+   */
+  self.callbacks = {}
+
+  /**
+   * direct map of string combinations to callbacks used for trigger()
+   *
+   * @type {Object}
+   */
+  self.directMap = {}
+
+  /**
+   * keeps track of what level each sequence is at since multiple
+   * sequences can start out with the same sequence
+   *
+   * @type {Object}
+   */
+  self.sequenceLevels = {}
+
+  /**
+   * variable to store the setTimeout call
+   *
+   * @type {null|number}
+   */
+  self.resetTimer
+
+  /**
+   * temporary state where we will ignore the next keyup
+   *
+   * @type {boolean|string}
+   */
+  self.ignoreNextKeyup = false
+
+  /**
+   * temporary state where we will ignore the next keypress
+   *
+   * @type {boolean}
+   */
+  self.ignoreNextKeypress = false
+
+  /**
+   * are we currently inside of a sequence?
+   * type of action ("keyup" or "keydown" or "keypress") or false
+   *
+   * @type {boolean|string}
+   */
+  self.nextExpectedAction = false
+
+  self.element = element
+
+  self.addEvents()
+
+  Combokeys.instances.push(self)
+  return self
+}
+
+module.exports.prototype.bind = require('./prototype/bind')
+module.exports.prototype.bindMultiple = require('./prototype/bindMultiple')
+module.exports.prototype.unbind = require('./prototype/unbind')
+module.exports.prototype.trigger = require('./prototype/trigger')
+module.exports.prototype.reset = require('./prototype/reset.js')
+module.exports.prototype.stopCallback = require('./prototype/stopCallback')
+module.exports.prototype.handleKey = require('./prototype/handleKey')
+module.exports.prototype.addEvents = require('./prototype/addEvents')
+module.exports.prototype.bindSingle = require('./prototype/bindSingle')
+module.exports.prototype.getKeyInfo = require('./prototype/getKeyInfo')
+module.exports.prototype.pickBestAction = require('./prototype/pickBestAction')
+module.exports.prototype.getReverseMap = require('./prototype/getReverseMap')
+module.exports.prototype.getMatches = require('./prototype/getMatches')
+module.exports.prototype.resetSequences = require('./prototype/resetSequences')
+module.exports.prototype.fireCallback = require('./prototype/fireCallback')
+module.exports.prototype.bindSequence = require('./prototype/bindSequence')
+module.exports.prototype.resetSequenceTimer = require('./prototype/resetSequenceTimer')
+module.exports.prototype.detach = require('./prototype/detach')
+
+module.exports.instances = []
+module.exports.reset = require('./reset')
+
+/**
+ * variable to store the flipped version of MAP from above
+ * needed to check if we should use keypress or not when no action
+ * is specified
+ *
+ * @type {Object|undefined}
+ */
+module.exports.REVERSE_MAP = null
+
+},{"./prototype/addEvents":2,"./prototype/bind":3,"./prototype/bindMultiple":4,"./prototype/bindSequence":5,"./prototype/bindSingle":6,"./prototype/detach":7,"./prototype/fireCallback":9,"./prototype/getKeyInfo":10,"./prototype/getMatches":11,"./prototype/getReverseMap":12,"./prototype/handleKey":13,"./prototype/pickBestAction":16,"./prototype/reset.js":17,"./prototype/resetSequenceTimer":18,"./prototype/resetSequences":19,"./prototype/stopCallback":20,"./prototype/trigger":21,"./prototype/unbind":22,"./reset":23}],2:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+module.exports = function () {
+  var self = this
+  var on = require('./dom-event')
+  var element = self.element
+
+  self.eventHandler = require('./handleKeyEvent').bind(self)
+
+  on(element, 'keypress', self.eventHandler)
+  on(element, 'keydown', self.eventHandler)
+  on(element, 'keyup', self.eventHandler)
+}
+
+},{"./dom-event":8,"./handleKeyEvent":14}],3:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * binds an event to Combokeys
+ *
+ * can be a single key, a combination of keys separated with +,
+ * an array of keys, or a sequence of keys separated by spaces
+ *
+ * be sure to list the modifier keys first to make sure that the
+ * correct key ends up getting bound (the last key in the pattern)
+ *
+ * @param {string|Array} keys
+ * @param {Function} callback
+ * @param {string=} action - "keypress", "keydown", or "keyup"
+ * @returns void
+ */
+module.exports = function (keys, callback, action) {
+  var self = this
+
+  keys = keys instanceof Array ? keys : [keys]
+  self.bindMultiple(keys, callback, action)
+  return self
+}
+
+},{}],4:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * binds multiple combinations to the same callback
+ *
+ * @param {Array} combinations
+ * @param {Function} callback
+ * @param {string|undefined} action
+ * @returns void
+ */
+module.exports = function (combinations, callback, action) {
+  var self = this
+
+  for (var j = 0; j < combinations.length; ++j) {
+    self.bindSingle(combinations[j], callback, action)
+  }
+}
+
+},{}],5:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * binds a key sequence to an event
+ *
+ * @param {string} combo - combo specified in bind call
+ * @param {Array} keys
+ * @param {Function} callback
+ * @param {string=} action
+ * @returns void
+ */
+module.exports = function (combo, keys, callback, action) {
+  var self = this
+
+  // start off by adding a sequence level record for this combination
+  // and setting the level to 0
+  self.sequenceLevels[combo] = 0
+
+  /**
+   * callback to increase the sequence level for this sequence and reset
+   * all other sequences that were active
+   *
+   * @param {string} nextAction
+   * @returns {Function}
+   */
+  function increaseSequence (nextAction) {
+    return function () {
+      self.nextExpectedAction = nextAction
+      ++self.sequenceLevels[combo]
+      self.resetSequenceTimer()
+    }
+  }
+
+  /**
+   * wraps the specified callback inside of another function in order
+   * to reset all sequence counters as soon as this sequence is done
+   *
+   * @param {Event} e
+   * @returns void
+   */
+  function callbackAndReset (e) {
+    var characterFromEvent
+    self.fireCallback(callback, e, combo)
+
+    // we should ignore the next key up if the action is key down
+    // or keypress.  this is so if you finish a sequence and
+    // release the key the final key will not trigger a keyup
+    if (action !== 'keyup') {
+      characterFromEvent = require('../../helpers/characterFromEvent')
+      self.ignoreNextKeyup = characterFromEvent(e)
+    }
+
+    // weird race condition if a sequence ends with the key
+    // another sequence begins with
+    setTimeout(
+      function () {
+        self.resetSequences()
+      },
+      10
+    )
+  }
+
+  // loop through keys one at a time and bind the appropriate callback
+  // function.  for any key leading up to the final one it should
+  // increase the sequence. after the final, it should reset all sequences
+  //
+  // if an action is specified in the original bind call then that will
+  // be used throughout.  otherwise we will pass the action that the
+  // next key in the sequence should match.  this allows a sequence
+  // to mix and match keypress and keydown events depending on which
+  // ones are better suited to the key provided
+  for (var j = 0; j < keys.length; ++j) {
+    var isFinal = j + 1 === keys.length
+    var wrappedCallback = isFinal ? callbackAndReset : increaseSequence(action || self.getKeyInfo(keys[j + 1]).action)
+    self.bindSingle(keys[j], wrappedCallback, action, combo, j)
+  }
+}
+
+},{"../../helpers/characterFromEvent":24}],6:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * binds a single keyboard combination
+ *
+ * @param {string} combination
+ * @param {Function} callback
+ * @param {string=} action
+ * @param {string=} sequenceName - name of sequence if part of sequence
+ * @param {number=} level - what part of the sequence the command is
+ * @returns void
+ */
+module.exports = function (combination, callback, action, sequenceName, level) {
+  var self = this
+
+  // store a direct mapped reference for use with Combokeys.trigger
+  self.directMap[combination + ':' + action] = callback
+
+  // make sure multiple spaces in a row become a single space
+  combination = combination.replace(/\s+/g, ' ')
+
+  var sequence = combination.split(' ')
+  var info
+
+  // if this pattern is a sequence of keys then run through this method
+  // to reprocess each pattern one key at a time
+  if (sequence.length > 1) {
+    self.bindSequence(combination, sequence, callback, action)
+    return
+  }
+
+  info = self.getKeyInfo(combination, action)
+
+  // make sure to initialize array if this is the first time
+  // a callback is added for this key
+  self.callbacks[info.key] = self.callbacks[info.key] || []
+
+  // remove an existing match if there is one
+  self.getMatches(info.key, info.modifiers, {type: info.action}, sequenceName, combination, level)
+
+  // add this call back to the array
+  // if it is a sequence put it at the beginning
+  // if not put it at the end
+  //
+  // this is important because the way these are processed expects
+  // the sequence ones to come first
+  self.callbacks[info.key][sequenceName ? 'unshift' : 'push']({
+    callback: callback,
+    modifiers: info.modifiers,
+    action: info.action,
+    seq: sequenceName,
+    level: level,
+    combo: combination
+  })
+}
+
+},{}],7:[function(require,module,exports){
+var off = require('./dom-event').off
+module.exports = function () {
+  var self = this
+  var element = self.element
+
+  off(element, 'keypress', self.eventHandler)
+  off(element, 'keydown', self.eventHandler)
+  off(element, 'keyup', self.eventHandler)
+}
+
+},{"./dom-event":8}],8:[function(require,module,exports){
+module.exports = on
+module.exports.on = on
+module.exports.off = off
+
+function on (element, event, callback, capture) {
+  !element.addEventListener && (event = 'on' + event)
+  ;(element.addEventListener || element.attachEvent).call(element, event, callback, capture)
+  return callback
+}
+
+function off (element, event, callback, capture) {
+  !element.removeEventListener && (event = 'on' + event)
+  ;(element.removeEventListener || element.detachEvent).call(element, event, callback, capture)
+  return callback
+}
+
+},{}],9:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * actually calls the callback function
+ *
+ * if your callback function returns false this will use the jquery
+ * convention - prevent default and stop propogation on the event
+ *
+ * @param {Function} callback
+ * @param {Event} e
+ * @returns void
+ */
+module.exports = function (callback, e, combo, sequence) {
+  var self = this
+  var preventDefault
+  var stopPropagation
+
+  // if this event should not happen stop here
+  if (self.stopCallback(e, e.target || e.srcElement, combo, sequence)) {
+    return
+  }
+
+  if (callback(e, combo) === false) {
+    preventDefault = require('../../helpers/preventDefault')
+    preventDefault(e)
+    stopPropagation = require('../../helpers/stopPropagation')
+    stopPropagation(e)
+  }
+}
+
+},{"../../helpers/preventDefault":28,"../../helpers/stopPropagation":33}],10:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * Gets info for a specific key combination
+ *
+ * @param  {string} combination key combination ("command+s" or "a" or "*")
+ * @param  {string=} action
+ * @returns {Object}
+ */
+module.exports = function (combination, action) {
+  var self = this
+  var keysFromString
+  var keys
+  var key
+  var j
+  var modifiers = []
+  var SPECIAL_ALIASES
+  var SHIFT_MAP
+  var isModifier
+
+  keysFromString = require('../../helpers/keysFromString')
+  // take the keys from this pattern and figure out what the actual
+  // pattern is all about
+  keys = keysFromString(combination)
+
+  SPECIAL_ALIASES = require('../../helpers/special-aliases')
+  SHIFT_MAP = require('../../helpers/shift-map')
+  isModifier = require('../../helpers/isModifier')
+  for (j = 0; j < keys.length; ++j) {
+    key = keys[j]
+
+    // normalize key names
+    if (SPECIAL_ALIASES[key]) {
+      key = SPECIAL_ALIASES[key]
+    }
+
+    // if this is not a keypress event then we should
+    // be smart about using shift keys
+    // this will only work for US keyboards however
+    if (action && action !== 'keypress' && SHIFT_MAP[key]) {
+      key = SHIFT_MAP[key]
+      modifiers.push('shift')
+    }
+
+    // if this key is a modifier then add it to the list of modifiers
+    if (isModifier(key)) {
+      modifiers.push(key)
+    }
+  }
+
+  // depending on what the key combination is
+  // we will try to pick the best event for it
+  action = self.pickBestAction(key, modifiers, action)
+
+  return {
+    key: key,
+    modifiers: modifiers,
+    action: action
+  }
+}
+
+},{"../../helpers/isModifier":26,"../../helpers/keysFromString":27,"../../helpers/shift-map":29,"../../helpers/special-aliases":30}],11:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * finds all callbacks that match based on the keycode, modifiers,
+ * and action
+ *
+ * @param {string} character
+ * @param {Array} modifiers
+ * @param {Event|Object} e
+ * @param {string=} sequenceName - name of the sequence we are looking for
+ * @param {string=} combination
+ * @param {number=} level
+ * @returns {Array}
+ */
+module.exports = function (character, modifiers, e, sequenceName, combination, level) {
+  var self = this
+  var j
+  var callback
+  var matches = []
+  var action = e.type
+  var isModifier
+  var modifiersMatch
+
+  if (
+      action === 'keypress' &&
+      // Firefox fires keypress for arrows
+      !(e.code && e.code.slice(0, 5) === 'Arrow')
+  ) {
+    // 'any-character' callbacks are only on `keypress`
+    var anyCharCallbacks = self.callbacks['any-character'] || []
+    anyCharCallbacks.forEach(function (callback) {
+      matches.push(callback)
+    })
+  }
+
+  if (!self.callbacks[character]) { return matches }
+
+  isModifier = require('../../helpers/isModifier')
+  // if a modifier key is coming up on its own we should allow it
+  if (action === 'keyup' && isModifier(character)) {
+    modifiers = [character]
+  }
+
+  // loop through all callbacks for the key that was pressed
+  // and see if any of them match
+  for (j = 0; j < self.callbacks[character].length; ++j) {
+    callback = self.callbacks[character][j]
+
+    // if a sequence name is not specified, but this is a sequence at
+    // the wrong level then move onto the next match
+    if (!sequenceName && callback.seq && self.sequenceLevels[callback.seq] !== callback.level) {
+      continue
+    }
+
+    // if the action we are looking for doesn't match the action we got
+    // then we should keep going
+    if (action !== callback.action) {
+      continue
+    }
+
+    // if this is a keypress event and the meta key and control key
+    // are not pressed that means that we need to only look at the
+    // character, otherwise check the modifiers as well
+    //
+    // chrome will not fire a keypress if meta or control is down
+    // safari will fire a keypress if meta or meta+shift is down
+    // firefox will fire a keypress if meta or control is down
+    modifiersMatch = require('./modifiersMatch')
+    if ((action === 'keypress' && !e.metaKey && !e.ctrlKey) || modifiersMatch(modifiers, callback.modifiers)) {
+      // when you bind a combination or sequence a second time it
+      // should overwrite the first one.  if a sequenceName or
+      // combination is specified in this call it does just that
+      //
+      // @todo make deleting its own method?
+      var deleteCombo = !sequenceName && callback.combo === combination
+      var deleteSequence = sequenceName && callback.seq === sequenceName && callback.level === level
+      if (deleteCombo || deleteSequence) {
+        self.callbacks[character].splice(j, 1)
+      }
+
+      matches.push(callback)
+    }
+  }
+
+  return matches
+}
+
+},{"../../helpers/isModifier":26,"./modifiersMatch":15}],12:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * reverses the map lookup so that we can look for specific keys
+ * to see what can and can't use keypress
+ *
+ * @return {Object}
+ */
+module.exports = function () {
+  var self = this
+  var constructor = self.constructor
+  var SPECIAL_KEYS_MAP
+
+  if (!constructor.REVERSE_MAP) {
+    constructor.REVERSE_MAP = {}
+    SPECIAL_KEYS_MAP = require('../../helpers/special-keys-map')
+    for (var key in SPECIAL_KEYS_MAP) {
+      // pull out the numeric keypad from here cause keypress should
+      // be able to detect the keys from the character
+      if (key > 95 && key < 112) {
+        continue
+      }
+
+      if (SPECIAL_KEYS_MAP.hasOwnProperty(key)) {
+        constructor.REVERSE_MAP[SPECIAL_KEYS_MAP[key]] = key
+      }
+    }
+  }
+  return constructor.REVERSE_MAP
+}
+
+},{"../../helpers/special-keys-map":32}],13:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * handles a character key event
+ *
+ * @param {string} character
+ * @param {Array} modifiers
+ * @param {Event} e
+ * @returns void
+ */
+module.exports = function (character, modifiers, e) {
+  var self = this
+  var callbacks
+  var j
+  var doNotReset = {}
+  var maxLevel = 0
+  var processedSequenceCallback = false
+  var isModifier
+  var ignoreThisKeypress
+
+  callbacks = self.getMatches(character, modifiers, e)
+  // Calculate the maxLevel for sequences so we can only execute the longest callback sequence
+  for (j = 0; j < callbacks.length; ++j) {
+    if (callbacks[j].seq) {
+      maxLevel = Math.max(maxLevel, callbacks[j].level)
+    }
+  }
+
+  // loop through matching callbacks for this key event
+  for (j = 0; j < callbacks.length; ++j) {
+    // fire for all sequence callbacks
+    // this is because if for example you have multiple sequences
+    // bound such as "g i" and "g t" they both need to fire the
+    // callback for matching g cause otherwise you can only ever
+    // match the first one
+    if (callbacks[j].seq) {
+      // only fire callbacks for the maxLevel to prevent
+      // subsequences from also firing
+      //
+      // for example 'a option b' should not cause 'option b' to fire
+      // even though 'option b' is part of the other sequence
+      //
+      // any sequences that do not match here will be discarded
+      // below by the resetSequences call
+      if (callbacks[j].level !== maxLevel) {
+        continue
+      }
+
+      processedSequenceCallback = true
+
+      // keep a list of which sequences were matches for later
+      doNotReset[callbacks[j].seq] = 1
+      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo, callbacks[j].seq)
+      continue
+    }
+
+    // if there were no sequence matches but we are still here
+    // that means this is a regular match so we should fire that
+    if (!processedSequenceCallback) {
+      self.fireCallback(callbacks[j].callback, e, callbacks[j].combo)
+    }
+  }
+
+  // if the key you pressed matches the type of sequence without
+  // being a modifier (ie "keyup" or "keypress") then we should
+  // reset all sequences that were not matched by this event
+  //
+  // this is so, for example, if you have the sequence "h a t" and you
+  // type "h e a r t" it does not match.  in this case the "e" will
+  // cause the sequence to reset
+  //
+  // modifier keys are ignored because you can have a sequence
+  // that contains modifiers such as "enter ctrl+space" and in most
+  // cases the modifier key will be pressed before the next key
+  //
+  // also if you have a sequence such as "ctrl+b a" then pressing the
+  // "b" key will trigger a "keypress" and a "keydown"
+  //
+  // the "keydown" is expected when there is a modifier, but the
+  // "keypress" ends up matching the nextExpectedAction since it occurs
+  // after and that causes the sequence to reset
+  //
+  // we ignore keypresses in a sequence that directly follow a keydown
+  // for the same character
+  ignoreThisKeypress = e.type === 'keypress' && self.ignoreNextKeypress
+  isModifier = require('../../helpers/isModifier')
+  if (e.type === self.nextExpectedAction && !isModifier(character) && !ignoreThisKeypress) {
+    self.resetSequences(doNotReset)
+  }
+
+  self.ignoreNextKeypress = processedSequenceCallback && e.type === 'keydown'
+}
+
+},{"../../helpers/isModifier":26}],14:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * handles a keydown event
+ *
+ * @param {Event} e
+ * @returns void
+ */
+module.exports = function (e) {
+  var self = this
+  var characterFromEvent
+  var eventModifiers
+
+  // normalize e.which for key events
+  // @see http://stackoverflow.com/questions/4285627/javascript-keycode-vs-charcode-utter-confusion
+  if (typeof e.which !== 'number') {
+    e.which = e.keyCode
+  }
+  characterFromEvent = require('../../helpers/characterFromEvent')
+  var character = characterFromEvent(e)
+
+  // no character found then stop
+  if (!character) {
+    return
+  }
+
+  // need to use === for the character check because the character can be 0
+  if (e.type === 'keyup' && self.ignoreNextKeyup === character) {
+    self.ignoreNextKeyup = false
+    return
+  }
+
+  eventModifiers = require('../../helpers/eventModifiers')
+  self.handleKey(character, eventModifiers(e), e)
+}
+
+},{"../../helpers/characterFromEvent":24,"../../helpers/eventModifiers":25}],15:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * checks if two arrays are equal
+ *
+ * @param {Array} modifiers1
+ * @param {Array} modifiers2
+ * @returns {boolean}
+ */
+module.exports = function (modifiers1, modifiers2) {
+  return modifiers1.sort().join(',') === modifiers2.sort().join(',')
+}
+
+},{}],16:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * picks the best action based on the key combination
+ *
+ * @param {string} key - character for key
+ * @param {Array} modifiers
+ * @param {string=} action passed in
+ */
+module.exports = function (key, modifiers, action) {
+  var self = this
+
+  // if no action was picked in we should try to pick the one
+  // that we think would work best for this key
+  if (!action) {
+    action = self.getReverseMap()[key] ? 'keydown' : 'keypress'
+  }
+
+  // modifier keys don't work as expected with keypress,
+  // switch to keydown
+  if (action === 'keypress' && modifiers.length) {
+    action = 'keydown'
+  }
+
+  return action
+}
+
+},{}],17:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * resets the library back to its initial state. This is useful
+ * if you want to clear out the current keyboard shortcuts and bind
+ * new ones - for example if you switch to another page
+ *
+ * @returns void
+ */
+module.exports = function () {
+  var self = this
+  self.callbacks = {}
+  self.directMap = {}
+  return this
+}
+
+},{}],18:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * called to set a 1 second timeout on the specified sequence
+ *
+ * this is so after each key press in the sequence you have 1 second
+ * to press the next key before you have to start over
+ *
+ * @returns void
+ */
+module.exports = function () {
+  var self = this
+
+  clearTimeout(self.resetTimer)
+  self.resetTimer = setTimeout(
+    function () {
+      self.resetSequences()
+    },
+    1000
+  )
+}
+
+},{}],19:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * resets all sequence counters except for the ones passed in
+ *
+ * @param {Object} doNotReset
+ * @returns void
+ */
+module.exports = function (doNotReset) {
+  var self = this
+
+  doNotReset = doNotReset || {}
+
+  var activeSequences = false
+  var key
+
+  for (key in self.sequenceLevels) {
+    if (doNotReset[key]) {
+      activeSequences = true
+      continue
+    }
+    self.sequenceLevels[key] = 0
+  }
+
+  if (!activeSequences) {
+    self.nextExpectedAction = false
+  }
+}
+
+},{}],20:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+* should we stop this event before firing off callbacks
+*
+* @param {Event} e
+* @param {Element} element
+* @return {boolean}
+*/
+module.exports = function (e, element) {
+  // if the element has the class "combokeys" then no need to stop
+  if ((' ' + element.className + ' ').indexOf(' combokeys ') > -1) {
+    return false
+  }
+
+  var tagName = element.tagName.toLowerCase()
+
+  // stop for input, select, and textarea
+  return tagName === 'input' || tagName === 'select' || tagName === 'textarea' || element.isContentEditable
+}
+
+},{}],21:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * triggers an event that has already been bound
+ *
+ * @param {string} keys
+ * @param {string=} action
+ * @returns void
+ */
+module.exports = function (keys, action) {
+  var self = this
+  if (self.directMap[keys + ':' + action]) {
+    self.directMap[keys + ':' + action]({}, keys)
+  }
+  return this
+}
+
+},{}],22:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * unbinds an event to Combokeys
+ *
+ * the unbinding sets the callback function of the specified key combo
+ * to an empty function and deletes the corresponding key in the
+ * directMap dict.
+ *
+ * TODO: actually remove this from the callbacks dictionary instead
+ * of binding an empty function
+ *
+ * the keycombo+action has to be exactly the same as
+ * it was defined in the bind method
+ *
+ * @param {string|Array} keys
+ * @param {string} action
+ * @returns void
+ */
+module.exports = function (keys, action) {
+  var self = this
+
+  return self.bind(keys, function () {}, action)
+}
+
+},{}],23:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+module.exports = function () {
+  var self = this
+
+  self.instances.forEach(function (combokeys) {
+    combokeys.reset()
+  })
+}
+
+},{}],24:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * takes the event and returns the key character
+ *
+ * @param {Event} e
+ * @return {string}
+ */
+module.exports = function (e) {
+  var SPECIAL_KEYS_MAP,
+    SPECIAL_CHARACTERS_MAP
+  SPECIAL_KEYS_MAP = require('./special-keys-map')
+  SPECIAL_CHARACTERS_MAP = require('./special-characters-map')
+
+  // for keypress events we should return the character as is
+  if (e.type === 'keypress') {
+    var character = String.fromCharCode(e.which)
+
+    // if the shift key is not pressed then it is safe to assume
+    // that we want the character to be lowercase.  this means if
+    // you accidentally have caps lock on then your key bindings
+    // will continue to work
+    //
+    // the only side effect that might not be desired is if you
+    // bind something like 'A' cause you want to trigger an
+    // event when capital A is pressed caps lock will no longer
+    // trigger the event.  shift+a will though.
+    if (!e.shiftKey) {
+      character = character.toLowerCase()
+    }
+
+    return character
+  }
+
+  // for non keypress events the special maps are needed
+  if (SPECIAL_KEYS_MAP[e.which]) {
+    return SPECIAL_KEYS_MAP[e.which]
+  }
+
+  if (SPECIAL_CHARACTERS_MAP[e.which]) {
+    return SPECIAL_CHARACTERS_MAP[e.which]
+  }
+
+  // if it is not in the special map
+
+  // with keydown and keyup events the character seems to always
+  // come in as an uppercase character whether you are pressing shift
+  // or not.  we should make sure it is always lowercase for comparisons
+  return String.fromCharCode(e.which).toLowerCase()
+}
+
+},{"./special-characters-map":31,"./special-keys-map":32}],25:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * takes a key event and figures out what the modifiers are
+ *
+ * @param {Event} e
+ * @returns {Array}
+ */
+module.exports = function (e) {
+  var modifiers = []
+
+  if (e.shiftKey) {
+    modifiers.push('shift')
+  }
+
+  if (e.altKey) {
+    modifiers.push('alt')
+  }
+
+  if (e.ctrlKey) {
+    modifiers.push('ctrl')
+  }
+
+  if (e.metaKey) {
+    modifiers.push('meta')
+  }
+
+  return modifiers
+}
+
+},{}],26:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * determines if the keycode specified is a modifier key or not
+ *
+ * @param {string} key
+ * @returns {boolean}
+ */
+module.exports = function (key) {
+  return key === 'shift' || key === 'ctrl' || key === 'alt' || key === 'meta'
+}
+
+},{}],27:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * Converts from a string key combination to an array
+ *
+ * @param  {string} combination like "command+shift+l"
+ * @return {Array}
+ */
+module.exports = function (combination) {
+  if (combination === '+') {
+    return ['+']
+  }
+
+  return combination.split('+')
+}
+
+},{}],28:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * prevents default for this event
+ *
+ * @param {Event} e
+ * @returns void
+ */
+module.exports = function (e) {
+  if (e.preventDefault) {
+    e.preventDefault()
+    return
+  }
+
+  e.returnValue = false
+}
+
+},{}],29:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * this is a mapping of keys that require shift on a US keypad
+ * back to the non shift equivelents
+ *
+ * this is so you can use keyup events with these keys
+ *
+ * note that this will only work reliably on US keyboards
+ *
+ * @type {Object}
+ */
+module.exports = {
+  '~': '`',
+  '!': '1',
+  '@': '2',
+  '#': '3',
+  '$': '4',
+  '%': '5',
+  '^': '6',
+  '&': '7',
+  '*': '8',
+  '(': '9',
+  ')': '0',
+  '_': '-',
+  '+': '=',
+  ':': ';',
+  '"': "'",
+  '<': ',',
+  '>': '.',
+  '?': '/',
+  '|': '\\'
+}
+
+},{}],30:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * this is a list of special strings you can use to map
+ * to modifier keys when you specify your keyboard shortcuts
+ *
+ * @type {Object}
+ */
+module.exports = {
+  'option': 'alt',
+  'command': 'meta',
+  'return': 'enter',
+  'escape': 'esc',
+  'mod': /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'meta' : 'ctrl'
+}
+
+},{}],31:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * mapping for special characters so they can support
+ *
+ * this dictionary is only used incase you want to bind a
+ * keyup or keydown event to one of these keys
+ *
+ * @type {Object}
+ */
+module.exports = {
+  106: '*',
+  107: '+',
+  109: '-',
+  110: '.',
+  111: '/',
+  186: ';',
+  187: '=',
+  188: ',',
+  189: '-',
+  190: '.',
+  191: '/',
+  192: '`',
+  219: '[',
+  220: '\\',
+  221: ']',
+  222: "'"
+}
+
+},{}],32:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+/**
+ * mapping of special keycodes to their corresponding keys
+ *
+ * everything in this dictionary cannot use keypress events
+ * so it has to be here to map to the correct keycodes for
+ * keyup/keydown events
+ *
+ * @type {Object}
+ */
+module.exports = {
+  8: 'backspace',
+  9: 'tab',
+  13: 'enter',
+  16: 'shift',
+  17: 'ctrl',
+  18: 'alt',
+  20: 'capslock',
+  27: 'esc',
+  32: 'space',
+  33: 'pageup',
+  34: 'pagedown',
+  35: 'end',
+  36: 'home',
+  37: 'left',
+  38: 'up',
+  39: 'right',
+  40: 'down',
+  45: 'ins',
+  46: 'del',
+  91: 'meta',
+  93: 'meta',
+  187: 'plus',
+  189: 'minus',
+  224: 'meta'
+}
+
+/**
+ * loop through the f keys, f1 to f19 and add them to the map
+ * programatically
+ */
+for (var i = 1; i < 20; ++i) {
+  module.exports[111 + i] = 'f' + i
+}
+
+/**
+ * loop through to map numbers on the numeric keypad
+ */
+for (i = 0; i <= 9; ++i) {
+  module.exports[i + 96] = i
+}
+
+},{}],33:[function(require,module,exports){
+/* eslint-env node, browser */
+'use strict'
+
+/**
+ * stops propogation for this event
+ *
+ * @param {Event} e
+ * @returns void
+ */
+module.exports = function (e) {
+  if (e.stopPropagation) {
+    e.stopPropagation()
+    return
+  }
+
+  e.cancelBubble = true
+}
+
+},{}],34:[function(require,module,exports){
+var randInt = require('./fab/randInt');
+
+var canvas = document.getElementById('canvas');
+var c = canvas.getContext('2d');
+
+module.exports = {
+	getSize: function () {
+		return { x: window.innerWidth, y: window.innerHeight };
+	},
+	getCenter: function () {
+		return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+	},
+	getRandomBoundPoint: function () {
+		if (Math.random() >= 0.5) {
+			return { x: randInt(0, window.innerWidth), y: 0 };
+		}
+		return { x: 0, y: randInt(0, window.innerHeight) };
+	},
+
+	resize: function () {
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	},
+
+	circle: function (entity) {
+		c.fillStyle = entity.color;
+		c.beginPath();
+		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
+		c.fill();
+	},
+	clear: function () {
+		c.fillStyle = 'white';
+		c.fillRect(0, 0, canvas.width, canvas.height);
+	},
+
+	text: function (pos, text, size, color) {
+		c.fillStyle = color;
+		c.font = size.toString() + 'px Helvetica';
+		c.fillStyle(text, pos.x, pos.y);
+	}
+};
+
+},{"./fab/randInt":37}],35:[function(require,module,exports){
+var vec2 = require('./vec2');
+
+function pytha(pos1, pos2) {
+	return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+}
+
+function distanceCheck(ent1, ent2) {
+	var pythaSol = pytha(ent1.pos, ent2.pos);
+	return pythaSol < ent1.radius + ent2.radius;
+}
+
+function squareCheck(ent1, ent2) {
+	return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
+}
+
+function limit1DVel(vel, maxVel) {
+	if (vel > 0) {
+		return vel >= maxVel ? maxVel : vel;
+	}
+	return vel <= -maxVel ? -maxVel : vel;
+}
+
+function limitVel(entity) {
+	return {
+		x: limit1DVel(entity.vel.x, entity.maxVel.x),
+		y: limit1DVel(entity.vel.y, entity.maxVel.y)
+	};
+}
+
+module.exports = {
+	create: function (frag) {
+		return {
+			radius: frag.radius || 4,
+			color: frag.color || 'black',
+
+			pos: frag.pos || { x: 0, y: 0 },
+			posOffset: frag.posOffset || { x: 0, y: 0 },
+
+			vel: frag.vel || { x: 0, y: 0 },
+			maxVel: frag.maxVel || { x: 0, y: 0 },
+
+			acel: frag.acel || { x: 0, y: 0 }
+		};
+	},
+
+	checkCollision: function (ent1, ent2) {
+		return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
+	},
+
+	acel: function (entity) {
+		entity.vel.y += entity.acel.y;
+		entity.vel.x += entity.acel.x;
+	},
+
+	move: function (entity) {
+		entity.vel = limitVel(entity);
+
+		entity.pos = vec2.add(entity.pos, entity.vel);
+	},
+
+	moveWithKeyboard: function (entity, keyboard) {
+		if (keyboard.up) {
+			entity.vel.y -= entity.acel.y;
+		}
+		if (keyboard.down) {
+			entity.vel.y += entity.acel.y;
+		}
+		if (keyboard.left) {
+			entity.vel.x -= entity.acel.x;
+		}
+		if (keyboard.right) {
+			entity.vel.x += entity.acel.x;
+		}
+
+		this.move(entity);
+	},
+
+	moveWithPlayer: function (entity, basePlayer) {
+		entity.pos = vec2.sub(basePlayer.pos, entity.posOffset);
+	},
+
+	swapAround: function (entity, canvasSize) {
+		// Y Axis
+		if (entity.pos.y > canvasSize.y) {
+			entity.pos.y -= canvasSize.y;
+		} else if (entity.pos.y < 0) {
+			entity.pos.y += canvasSize.y;
+		}
+
+		// X Axis
+		if (entity.pos.x > canvasSize.x) {
+			entity.pos.x -= canvasSize.x;
+		} else if (entity.pos.x < 0) {
+			entity.pos.x += canvasSize.x;
+		}
+	}
+};
+
+},{"./vec2":41}],36:[function(require,module,exports){
+module.exports = function () {
+	return '#' + Math.random().toString(16).substr(-6);
+};
+
+},{}],37:[function(require,module,exports){
+module.exports = function (min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+},{}],38:[function(require,module,exports){
+var update = require('./update');
+
+var menu = document.getElementById('menu');
+var startButton = document.getElementById('start');
+
+startButton.onclick = function () {
+	menu.style.display = 'none';
+	update.renderLoop();
+	update.secondsLoop();
+};
+
+},{"./update":40}],39:[function(require,module,exports){
+var Combokeys = require('combokeys');
+var canvasInput = new Combokeys(document.documentElement);
+
+var kb = {
+	up: false, down: false, left: false, right: false
+};
+
+canvasInput.bind('up', function () {
+	kb.up = true;
+}, 'keydown');
+canvasInput.bind('up', function () {
+	kb.up = false;
+}, 'keyup');
+canvasInput.bind('down', function () {
+	kb.down = true;
+}, 'keydown');
+canvasInput.bind('down', function () {
+	kb.down = false;
+}, 'keyup');
+canvasInput.bind('left', function () {
+	kb.left = true;
+}, 'keydown');
+canvasInput.bind('left', function () {
+	kb.left = false;
+}, 'keyup');
+canvasInput.bind('right', function () {
+	kb.right = true;
+}, 'keydown');
+canvasInput.bind('right', function () {
+	kb.right = false;
+}, 'keyup');
+
+module.exports = kb;
+
+},{"combokeys":1}],40:[function(require,module,exports){
+var vec2 = require('./vec2.js');
+var randInt = require('./fab/randInt');
+var randHex = require('./fab/randHex');
+
+var entity = require('./entity');
+var canvas = require('./canvas');
+var keyboard = require('./keyboard');
+
+var playerArray = [];
+var bulletArray = [];
+
+var frame = -1;
+var seconds = -1;
+
+canvas.resize();
+
+var basePlayer = entity.create({
+	radius: 5,
+	color: 'red',
+
+	pos: canvas.getCenter(),
+
+	maxVel: { x: 3, y: 3 },
+	acel: { x: 0.4, y: 0.4 }
+});
+
+function checkCollision(playerEntity) {
+	for (var b = 0, bLen = bulletArray.length; b < bLen; b++) {
+		if (bulletArray[b] && entity.checkCollision(playerEntity, bulletArray[b])) {
+			let bulletToMove = bulletArray[b];
+
+			playerArray.push(entity.create({
+				radius: bulletToMove.radius,
+				color: bulletToMove.color,
+				pos: bulletToMove.pos,
+				posOffset: vec2.sub(basePlayer.pos, bulletToMove.pos)
+			}));
+
+			bulletArray.splice(b, 1);
+		}
+	}
+}
+
+function renderLoop() {
+	frame++;
+	canvas.clear();
+
+	var canvasSize = canvas.getSize();
+
+	for (var i = 0; i < bulletArray.length; i++) {
+		if (bulletArray[i]) {
+			let bulletEntity = bulletArray[i];
+
+			entity.move(bulletEntity);
+			entity.acel(bulletEntity);
+			entity.swapAround(bulletEntity, canvasSize);
+
+			canvas.circle(bulletEntity);
+		}
+	}
+
+	entity.moveWithKeyboard(basePlayer, keyboard);
+	entity.swapAround(basePlayer, canvasSize);
+	canvas.circle(basePlayer);
+	checkCollision(basePlayer);
+
+	for (var p = 0; p < playerArray.length; p++) {
+		let playerEntity = playerArray[p];
+
+		entity.moveWithPlayer(playerEntity, basePlayer);
+		entity.swapAround(playerEntity, canvasSize);
+
+		canvas.circle(playerEntity);
+		checkCollision(playerEntity);
+	}
+
+	window.requestAnimationFrame(renderLoop);
+}
+
+function secondsLoop() {
+	seconds++;
+
+	if (bulletArray.length <= 130) {
+		bulletArray.push(entity.create({
+			radius: randInt(7, 14),
+			color: randHex(),
+
+			pos: canvas.getRandomBoundPoint(),
+			maxVel: {
+				x: Math.random() * seconds / 7 + 1,
+				y: Math.random() * seconds / 7 + 1
+			},
+			acel: {
+				x: Math.random() < 0.5 ? -0.005 : 0.005,
+				y: Math.random() < 0.5 ? -0.005 : 0.005
+			}
+		}));
+	}
+
+	setTimeout(secondsLoop, 1000);
+}
+
+module.exports = {
+	renderLoop: renderLoop,
+	secondsLoop: secondsLoop
+};
+
+},{"./canvas":34,"./entity":35,"./fab/randHex":36,"./fab/randInt":37,"./keyboard":39,"./vec2.js":41}],41:[function(require,module,exports){
+function add(firstVec, secondVec) {
+	return { x: firstVec.x + secondVec.x, y: firstVec.y + secondVec.y };
+}
+
+function sub(firstVec, secondVec) {
+	return { x: firstVec.x - secondVec.x, y: firstVec.y - secondVec.y };
+}
+
+function multi(firstVec, secondVec) {
+	return { x: firstVec.x * secondVec.x, y: firstVec.y * secondVec.y };
+}
+
+module.exports = {
+	add: add,
+	sub: sub,
+	multi: multi
+};
+
+},{}]},{},[38])
+
+
+//# sourceMappingURL=bullet.js.map

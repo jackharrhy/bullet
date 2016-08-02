@@ -77,9 +77,8 @@ gulp.task('css', function () {
 	.pipe(gulp.dest('./dist/css'));
 });
 
-// JS -> Minified JS
+// JS -> JS, because jsuglify is breaking
 gulp.task('js', function () {
 	return gulp.src('./dev/js/**/*.js')
-	.pipe(uglify())
 	.pipe(gulp.dest('./dist/js'));
 });
