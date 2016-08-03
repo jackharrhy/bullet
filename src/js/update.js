@@ -16,13 +16,22 @@ canvas.resize();
 
 var basePlayer = entity.create({
 	radius: 5,
-	color: 'red',
+	color: 'white',
+	outlineColor: 'black',
 
 	pos: canvas.getCenter(),
 
 	maxVel: {x: 3, y: 3},
 	acel: {x: 0.4, y: 0.4}
 });
+
+var isActive;
+window.onfocus = function () {
+  isActive = true;
+};
+window.onblur = function () {
+  isActive = false;
+};
 
 function checkCollision(playerEntity) {
 	for(var b=0, bLen=bulletArray.length; b < bLen; b++) {
@@ -41,11 +50,20 @@ function checkCollision(playerEntity) {
 	}
 }
 
+var hasMoved = false;
+
 function renderLoop() {
 	frame++;
 	canvas.clear();
 
 	var canvasSize = canvas.getSize();
+
+	if(!hasMoved) {
+		canvas.img('thisIsYou',canvasSize.x / 2 - (70),canvasSize.y / 2 - (123));
+		if(keyboard.up || keyboard.down || keyboard.left || keyboard.right) {
+			hasMoved = true;
+		}
+	}
 
 	for(var i=0; i < bulletArray.length; i++) {
 		if(bulletArray[i]) {
@@ -61,7 +79,7 @@ function renderLoop() {
 
 	entity.moveWithKeyboard(basePlayer, keyboard);
 	entity.swapAround(basePlayer, canvasSize);
-	canvas.circle(basePlayer);
+	canvas.outlineCircle(basePlayer);
 	checkCollision(basePlayer);
 
 	for(var p=0; p < playerArray.length; p++) {
@@ -80,7 +98,7 @@ function renderLoop() {
 function secondsLoop() {
 	seconds++;
 
-	if(bulletArray.length <= 130) {
+	if(hasMoved && isActive && bulletArray.length <= 130) {
 		bulletArray.push(entity.create({
 			radius: randInt(7,14),
 			color: randHex(),
@@ -92,7 +110,7 @@ function secondsLoop() {
 			},
 			acel: {
 				x: Math.random() < 0.5 ? -0.005 : 0.005,
-				y: Math.random() < 0.5 ? -0.005 : 0.005 
+				y: Math.random() < 0.5 ? -0.005 : 0.005
 			}
 		}));
 	}
@@ -104,4 +122,3 @@ module.exports = {
 	renderLoop: renderLoop,
 	secondsLoop: secondsLoop
 };
-

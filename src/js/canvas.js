@@ -3,6 +3,10 @@ var randInt = require('./fab/randInt');
 var canvas = document.getElementById('canvas');
 var c = canvas.getContext('2d');
 
+var imgs = {
+	thisIsYou: document.getElementById('imgthisIsYou')
+};
+
 module.exports = {
 	getSize: function() {
 		return { x: window.innerWidth, y: window.innerHeight };
@@ -22,12 +26,26 @@ module.exports = {
 		canvas.height = window.innerHeight;
 	},
 
+	img: function(imgStr, x,y) {
+		c.drawImage(imgs[imgStr],x,y);
+	},
+
 	circle: function(entity) {
 		c.fillStyle = entity.color;
 		c.beginPath();
 		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2*Math.PI);
 		c.fill();
 	},
+
+	outlineCircle: function(entity) {
+		c.fillStyle = entity.color;
+		c.strokeStyle = entity.strokeColor;
+		c.beginPath();
+		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2*Math.PI);
+		c.fill();
+		c.stroke();
+	},
+
 	clear: function() {
 		c.fillStyle = 'white';
 		c.fillRect(0,0,canvas.width,canvas.height);

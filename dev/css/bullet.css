@@ -1,6 +1,9 @@
 body {
   margin: 0;
 }
+img {
+  display: none;
+}
 #menuContainer {
   position: absolute;
   height: 100%;
