@@ -7,6 +7,18 @@ html
 	body
 		img(id="imgthisIsYou", src="img/thisIsYou.png")
 
+		#scoreBoards
+			#avoidBoard
+				h3 Seconds Avoided
+				p#secondsAvoided 0
+
+			#collectBoard
+				h3 Seconds left to collect
+				p#secondsLeft 20
+
+				h3 Amount Collected
+				p#amountCollected 0
+
 		#menuContainer
 			#menu
 				h1 bullet
@@ -16,6 +28,8 @@ html
 
 				a(href="https://github.com/jackharrhy/bullet")
 					p Source on Github
+
+		#finish
 
 		canvas#canvas
 			p Your browser doesn't support the HTML5 canvas, please upgrade to a suitable browser

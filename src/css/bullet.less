@@ -1,9 +1,48 @@
 body {
 	margin: 0;
+
+	font-family: Helvetica, sans-serif;
+	color: rgb(240,240,240);
 }
 
 img {
+	display: none;
+}
+
+#scoreBoards {
+	position: absolute;
+	top: 0;
+	display: none;
+
+	#avoidBoard, #collectBoard {
+		opacity: 0.6;
+		width: 17em;
+		margin-top: 0.5em;
+		margin-left: 0.5em;
+		background-color: #4682b4;
+		border-radius: 4px;
+		padding: 0.5em 0.9em;
+
+		h3, p {
+			margin: 0.25em 0;
+		}
+
+		h3
+		
+		p {
+			text-align: left;
+		}
+	}
+
+	#avoidBoard {
+		display: block;
+		background-color: #4d8cc0;
+	}
+
+	#collectBoard {
 		display: none;
+		background-color: #a26f45;
+	}
 }
 
 #menuContainer {
@@ -24,8 +63,6 @@ img {
 	border-radius: 4px;
 
 	text-align: center;
-	font-family: Helvetica, sans-serif;
-	color: rgb(240,240,240);
 
 	h1 {
 		margin: 0.3em 0 0 0;
@@ -63,4 +100,9 @@ canvas {
 	top: 0;
 	height: 100%;
 	width: 100%;
+}
+
+#finish {
+	width: 0;
+	display: none;
 }

@@ -6,6 +6,8 @@ var entity = require('./entity');
 var canvas = require('./canvas');
 var keyboard = require('./keyboard');
 
+var scoreBoard = require('./scoreBoard');
+
 var playerArray = [];
 var bulletArray = [];
 
@@ -25,13 +27,8 @@ var basePlayer = entity.create({
 	acel: {x: 0.4, y: 0.4}
 });
 
-var isActive;
-window.onfocus = function () {
-  isActive = true;
-};
-window.onblur = function () {
-  isActive = false;
-};
+var avoiding = true;
+var finished = false;
 
 function checkCollision(playerEntity) {
 	for(var b=0, bLen=bulletArray.length; b < bLen; b++) {
@@ -46,6 +43,15 @@ function checkCollision(playerEntity) {
 			}));
 
 			bulletArray.splice(b,1);
+
+			if(avoiding) {
+				avoiding = false;
+				document.getElementById('avoidBoard').style.opacity = '0.25';
+				document.getElementById('collectBoard').style.display = 'block';
+			}
+
+			scoreBoard.amountCollected++;
+			scoreBoard.updateDOM();
 		}
 	}
 }
@@ -92,30 +98,58 @@ function renderLoop() {
 		checkCollision(playerEntity);
 	}
 
-	window.requestAnimationFrame(renderLoop);
+	if(!finished) {
+		window.requestAnimationFrame(renderLoop);
+	}
 }
 
 function secondsLoop() {
 	seconds++;
 
-	if(hasMoved && isActive && bulletArray.length <= 130) {
-		bulletArray.push(entity.create({
-			radius: randInt(7,14),
-			color: randHex(),
+	if(hasMoved) {
+		if(avoiding) {
+			scoreBoard.avoidingSeconds++;
+		} else {
+			scoreBoard.secondsLeft--;
 
-			pos: canvas.getRandomBoundPoint(),
-			maxVel: {
-				x: ((Math.random() * seconds/7) + 1),
-				y: ((Math.random() * seconds/7) + 1)
-			},
-			acel: {
-				x: Math.random() < 0.5 ? -0.005 : 0.005,
-				y: Math.random() < 0.5 ? -0.005 : 0.005
+			if(scoreBoard.secondsLeft <= 0) {
+				finished = true;
 			}
-		}));
+		}
+
+		scoreBoard.updateDOM();
+
+		if(bulletArray.length <= 130) {
+			bulletArray.push(entity.create({
+				radius: randInt(7,14),
+				color: randHex(),
+
+				pos: canvas.getRandomBoundPoint(),
+				maxVel: {
+					x: ((Math.random() * seconds/7) + 1),
+					y: ((Math.random() * seconds/7) + 1)
+				},
+				acel: {
+					x: Math.random() < 0.5 ? -0.005 : 0.005,
+					y: Math.random() < 0.5 ? -0.005 : 0.005
+				}
+			}));
+		}
 	}
 
-	setTimeout(secondsLoop, 1000);
+	if(!finished) {
+		setTimeout(secondsLoop, 1000);
+		// TODO TEMP TODO TEMP
+		finish();
+	} else {
+		finish();
+	}
+}
+
+function finish() {
+	scoreBoard.hide();
+	canvas.hide();
+	document.getElementById('finish').style.display = 'block';
 }
 
 module.exports = {

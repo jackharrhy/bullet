@@ -26,6 +26,10 @@ module.exports = {
 		canvas.height = window.innerHeight;
 	},
 
+	hide: function() {
+		canvas.style.display = 'none';
+	},
+
 	img: function(imgStr, x,y) {
 		c.drawImage(imgs[imgStr],x,y);
 	},
