@@ -27,8 +27,6 @@ img {
 			margin: 0.25em 0;
 		}
 
-		h3
-		
 		p {
 			text-align: left;
 		}
@@ -79,9 +77,9 @@ img {
 		border: none;
 		outline: none;
 
-		background-color: rgb(220,255,220);;
+		background-color: rgb(220,255,220);
 		&:hover {
-			background-color: rgb(180,255,180);;
+			background-color: rgb(180,255,180);
 		}
 	}
 
@@ -103,6 +101,24 @@ canvas {
 }
 
 #finish {
-	width: 0;
 	display: none;
+
+	background-color: #4682b4;
+
+	text-align: center;
+}
+
+#mostAvoidedContainer, #mostCollectedContainer, #bestCombinedScoreContainer {
+	display: inline-block;
+	width: 33.333%;
+}
+
+#mostCollectedContainer {
+	left: 33.333%;
+}
+
+#bestCombinedScoreContainer {
+	h3 {
+		font-size: 0.9em;
+	}
 }

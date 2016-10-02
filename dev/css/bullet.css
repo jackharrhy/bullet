@@ -27,8 +27,8 @@ img {
 #scoreBoards #collectBoard p {
   margin: 0.25em 0;
 }
-#scoreBoards #avoidBoard h3 p,
-#scoreBoards #collectBoard h3 p {
+#scoreBoards #avoidBoard p,
+#scoreBoards #collectBoard p {
   text-align: left;
 }
 #scoreBoards #avoidBoard {
@@ -87,6 +87,19 @@ canvas {
   width: 100%;
 }
 #finish {
-  width: 0;
   display: none;
+  background-color: #4682b4;
+  text-align: center;
+}
+#mostAvoidedContainer,
+#mostCollectedContainer,
+#bestCombinedScoreContainer {
+  display: inline-block;
+  width: 33.333%;
+}
+#mostCollectedContainer {
+  left: 33.333%;
+}
+#bestCombinedScoreContainer h3 {
+  font-size: 0.9em;
 }

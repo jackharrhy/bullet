@@ -149,6 +149,7 @@ function secondsLoop() {
 function finish() {
 	scoreBoard.hide();
 	canvas.hide();
+	document.getElementById('menuContainer').style.display = 'none';
 	document.getElementById('finish').style.display = 'block';
 }
 
