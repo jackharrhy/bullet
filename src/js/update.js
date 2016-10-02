@@ -6,6 +6,8 @@ var entity = require('./entity');
 var canvas = require('./canvas');
 var keyboard = require('./keyboard');
 
+var state = require('./state');
+
 var scoreBoard = require('./scoreBoard');
 
 var playerArray = [];
@@ -16,19 +18,7 @@ var seconds = -1;
 
 canvas.resize();
 
-var basePlayer = entity.create({
-	radius: 5,
-	color: 'white',
-	outlineColor: 'black',
-
-	pos: canvas.getCenter(),
-
-	maxVel: {x: 3, y: 3},
-	acel: {x: 0.4, y: 0.4}
-});
-
-var avoiding = true;
-var finished = false;
+var basePlayer = entity.basePlayer(canvas.getCenter());
 
 function checkCollision(playerEntity) {
 	for(var b=0, bLen=bulletArray.length; b < bLen; b++) {
@@ -44,8 +34,8 @@ function checkCollision(playerEntity) {
 
 			bulletArray.splice(b,1);
 
-			if(avoiding) {
-				avoiding = false;
+			if(state.avoiding) {
+				state.avoiding = false;
 				document.getElementById('avoidBoard').style.opacity = '0.25';
 				document.getElementById('collectBoard').style.display = 'block';
 			}
@@ -56,18 +46,16 @@ function checkCollision(playerEntity) {
 	}
 }
 
-var hasMoved = false;
-
 function renderLoop() {
 	frame++;
 	canvas.clear();
 
 	var canvasSize = canvas.getSize();
 
-	if(!hasMoved) {
+	if(!state.hasMoved) {
 		canvas.img('thisIsYou',canvasSize.x / 2 - (70),canvasSize.y / 2 - (123));
 		if(keyboard.up || keyboard.down || keyboard.left || keyboard.right) {
-			hasMoved = true;
+			state.hasMoved = true;
 		}
 	}
 
@@ -98,7 +86,7 @@ function renderLoop() {
 		checkCollision(playerEntity);
 	}
 
-	if(!finished) {
+	if(!state.finished) {
 		window.requestAnimationFrame(renderLoop);
 	}
 }
@@ -106,14 +94,14 @@ function renderLoop() {
 function secondsLoop() {
 	seconds++;
 
-	if(hasMoved) {
-		if(avoiding) {
+	if(state.hasMoved) {
+		if(state.avoiding) {
 			scoreBoard.avoidingSeconds++;
 		} else {
 			scoreBoard.secondsLeft--;
 
 			if(scoreBoard.secondsLeft <= 0) {
-				finished = true;
+				state.finished = true;
 			}
 		}
 
@@ -137,10 +125,9 @@ function secondsLoop() {
 		}
 	}
 
-	if(!finished) {
+	if(!state.finished) {
 		setTimeout(secondsLoop, 1000);
-		// TODO TEMP TODO TEMP
-		finish();
+		//finish();
 	} else {
 		finish();
 	}

@@ -1223,21 +1223,12 @@ module.exports = {
 	}
 };
 
-},{"./fab/randInt":37}],35:[function(require,module,exports){
+},{"./fab/randInt":39}],35:[function(require,module,exports){
 var vec2 = require('./vec2');
 
-function pytha(pos1, pos2) {
-	return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
-}
+var distanceCheck = require('./fab/distanceCheck');
 
-function distanceCheck(ent1, ent2) {
-	var pythaSol = pytha(ent1.pos, ent2.pos);
-	return pythaSol < ent1.radius + ent2.radius;
-}
-
-function squareCheck(ent1, ent2) {
-	return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
-}
+var squareCheck = require('./fab/squareCheck');
 
 function limit1DVel(vel, maxVel) {
 	if (vel > 0) {
@@ -1267,6 +1258,19 @@ module.exports = {
 
 			acel: frag.acel || { x: 0, y: 0 }
 		};
+	},
+
+	basePlayer: function (center) {
+		return this.create({
+			radius: 5,
+			color: 'white',
+			outlineColor: 'black',
+
+			pos: center,
+
+			maxVel: { x: 3, y: 3 },
+			acel: { x: 0.4, y: 0.4 }
+		});
 	},
 
 	checkCollision: function (ent1, ent2) {
@@ -1322,17 +1326,35 @@ module.exports = {
 	}
 };
 
-},{"./vec2":42}],36:[function(require,module,exports){
+},{"./fab/distanceCheck":36,"./fab/squareCheck":40,"./vec2":46}],36:[function(require,module,exports){
+var pytha = require('./pytha');
+
+module.exports = function (ent1, ent2) {
+	var pythaSol = pytha(ent1.pos, ent2.pos);
+	return pythaSol < ent1.radius + ent2.radius;
+};
+
+},{"./pytha":37}],37:[function(require,module,exports){
+module.exports = function (pos1, pos2) {
+	return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+};
+
+},{}],38:[function(require,module,exports){
 module.exports = function () {
 	return '#' + Math.random().toString(16).substr(-6);
 };
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 module.exports = function (min, max) {
 	return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
+module.exports = function (ent1, ent2) {
+	return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
+};
+
+},{}],41:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded", function (event) {
 	var update = require('./update');
 
@@ -1349,7 +1371,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	};
 });
 
-},{"./update":41}],39:[function(require,module,exports){
+},{"./update":45}],42:[function(require,module,exports){
 var Combokeys = require('combokeys');
 var canvasInput = new Combokeys(document.documentElement);
 
@@ -1384,7 +1406,7 @@ canvasInput.bind('right', function () {
 
 module.exports = kb;
 
-},{"combokeys":1}],40:[function(require,module,exports){
+},{"combokeys":1}],43:[function(require,module,exports){
 var dom = {
 	scoreBoards: document.getElementById('scoreBoards'),
 	avoidingSeconds: document.getElementById('secondsAvoided'),
@@ -1408,7 +1430,15 @@ module.exports = {
 	}
 };
 
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
+module.exports = {
+  avoiding: true,
+  finished: false,
+
+  hasMoved: false
+};
+
+},{}],45:[function(require,module,exports){
 var vec2 = require('./vec2.js');
 var randInt = require('./fab/randInt');
 var randHex = require('./fab/randHex');
@@ -1416,6 +1446,8 @@ var randHex = require('./fab/randHex');
 var entity = require('./entity');
 var canvas = require('./canvas');
 var keyboard = require('./keyboard');
+
+var state = require('./state');
 
 var scoreBoard = require('./scoreBoard');
 
@@ -1427,19 +1459,7 @@ var seconds = -1;
 
 canvas.resize();
 
-var basePlayer = entity.create({
-	radius: 5,
-	color: 'white',
-	outlineColor: 'black',
-
-	pos: canvas.getCenter(),
-
-	maxVel: { x: 3, y: 3 },
-	acel: { x: 0.4, y: 0.4 }
-});
-
-var avoiding = true;
-var finished = false;
+var basePlayer = entity.basePlayer(canvas.getCenter());
 
 function checkCollision(playerEntity) {
 	for (var b = 0, bLen = bulletArray.length; b < bLen; b++) {
@@ -1455,8 +1475,8 @@ function checkCollision(playerEntity) {
 
 			bulletArray.splice(b, 1);
 
-			if (avoiding) {
-				avoiding = false;
+			if (state.avoiding) {
+				state.avoiding = false;
 				document.getElementById('avoidBoard').style.opacity = '0.25';
 				document.getElementById('collectBoard').style.display = 'block';
 			}
@@ -1467,18 +1487,16 @@ function checkCollision(playerEntity) {
 	}
 }
 
-var hasMoved = false;
-
 function renderLoop() {
 	frame++;
 	canvas.clear();
 
 	var canvasSize = canvas.getSize();
 
-	if (!hasMoved) {
+	if (!state.hasMoved) {
 		canvas.img('thisIsYou', canvasSize.x / 2 - 70, canvasSize.y / 2 - 123);
 		if (keyboard.up || keyboard.down || keyboard.left || keyboard.right) {
-			hasMoved = true;
+			state.hasMoved = true;
 		}
 	}
 
@@ -1509,7 +1527,7 @@ function renderLoop() {
 		checkCollision(playerEntity);
 	}
 
-	if (!finished) {
+	if (!state.finished) {
 		window.requestAnimationFrame(renderLoop);
 	}
 }
@@ -1517,14 +1535,14 @@ function renderLoop() {
 function secondsLoop() {
 	seconds++;
 
-	if (hasMoved) {
-		if (avoiding) {
+	if (state.hasMoved) {
+		if (state.avoiding) {
 			scoreBoard.avoidingSeconds++;
 		} else {
 			scoreBoard.secondsLeft--;
 
 			if (scoreBoard.secondsLeft <= 0) {
-				finished = true;
+				state.finished = true;
 			}
 		}
 
@@ -1548,10 +1566,9 @@ function secondsLoop() {
 		}
 	}
 
-	if (!finished) {
+	if (!state.finished) {
 		setTimeout(secondsLoop, 1000);
-		// TODO TEMP TODO TEMP
-		finish();
+		//finish();
 	} else {
 		finish();
 	}
@@ -1569,7 +1586,7 @@ module.exports = {
 	secondsLoop: secondsLoop
 };
 
-},{"./canvas":34,"./entity":35,"./fab/randHex":36,"./fab/randInt":37,"./keyboard":39,"./scoreBoard":40,"./vec2.js":42}],42:[function(require,module,exports){
+},{"./canvas":34,"./entity":35,"./fab/randHex":38,"./fab/randInt":39,"./keyboard":42,"./scoreBoard":43,"./state":44,"./vec2.js":46}],46:[function(require,module,exports){
 function add(firstVec, secondVec) {
 	return { x: firstVec.x + secondVec.x, y: firstVec.y + secondVec.y };
 }
@@ -1588,7 +1605,7 @@ module.exports = {
 	multi: multi
 };
 
-},{}]},{},[38])
+},{}]},{},[41])
 
 
 //# sourceMappingURL=bullet.js.map

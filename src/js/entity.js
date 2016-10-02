@@ -1,25 +1,8 @@
 var vec2 = require('./vec2');
 
-function pytha(pos1, pos2) {
-	return Math.sqrt(
-		((pos1.x - pos2.x) * (pos1.x - pos2.x)) +
-		((pos1.y - pos2.y) * (pos1.y - pos2.y))
-	);
-}
+var distanceCheck = require('./fab/distanceCheck');
 
-function distanceCheck(ent1, ent2) {
-	var pythaSol = pytha(ent1.pos, ent2.pos);
-	return pythaSol < (ent1.radius + ent2.radius);
-}
-
-function squareCheck(ent1, ent2) {
-	return !(
-		(ent1.pos.x + ent1.radius) < (ent2.pos.x - ent2.radius) ||
-		(ent1.pos.y + ent1.radius) < (ent2.pos.y - ent2.radius) ||
-		(ent1.pos.x - ent1.radius) > (ent2.pos.x + ent2.radius) ||
-		(ent1.pos.y - ent1.radius) > (ent2.pos.y + ent2.radius)
-	);
-}
+var squareCheck = require('./fab/squareCheck');
 
 function limit1DVel(vel, maxVel) {
 	if(vel > 0) {
@@ -40,17 +23,30 @@ module.exports = {
 		return {
 			radius: frag.radius || 4,
 			color: frag.color || 'black',
-			
+
 			pos: frag.pos || {x: 0, y: 0},
 			posOffset: frag.posOffset || {x: 0, y: 0},
-			
+
 			vel: frag.vel || {x: 0, y: 0},
 			maxVel: frag.maxVel || {x: 0, y: 0},
-			
+
 			acel: frag.acel || {x: 0, y: 0}
 		};
 	},
-	
+
+	basePlayer: function(center) {
+		return this.create({
+			radius: 5,
+			color: 'white',
+			outlineColor: 'black',
+
+			pos: center,
+
+			maxVel: {x: 3, y: 3},
+			acel: {x: 0.4, y: 0.4}
+		});
+	},
+
 	checkCollision: function(ent1, ent2) {
 		return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
 	},
@@ -59,7 +55,7 @@ module.exports = {
 		entity.vel.y += entity.acel.y;
 		entity.vel.x += entity.acel.x;
 	},
-	
+
 	move: function(entity) {
 		entity.vel = limitVel(entity);
 
@@ -79,14 +75,14 @@ module.exports = {
 		if(keyboard.right) {
 			entity.vel.x += entity.acel.x;
 		}
-		
+
 		this.move(entity);
 	},
 
 	moveWithPlayer: function(entity, basePlayer) {
 		entity.pos = vec2.sub(basePlayer.pos, entity.posOffset);
 	},
-	
+
 	swapAround: function(entity, canvasSize) {
 		// Y Axis
 		if(entity.pos.y > canvasSize.y) {
@@ -95,7 +91,7 @@ module.exports = {
 		else if(entity.pos.y < 0) {
 			entity.pos.y += canvasSize.y;
 		}
-	
+
 		// X Axis
 		if(entity.pos.x > canvasSize.x) {
 			entity.pos.x -= canvasSize.x;
