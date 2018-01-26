@@ -1,74 +1,74 @@
 doctype html
 html
-	head
-		title bullet | jackharrhy
-		link(rel="stylesheet", href="css/bullet.css")
+  head
+    title bullet | jackharrhy
+    link(rel="stylesheet", href="css/bullet.css")
 
-	body
-		img(id="imgthisIsYou", src="img/thisIsYou.png")
+  body
+    img(id="imgthisIsYou", src="img/thisIsYou.png")
 
-		#scoreBoards
-			#avoidBoard
-				h3 Seconds Avoided
-				p#secondsAvoided 0
+    #scoreBoards
+      #avoidBoard
+        h3 Seconds Avoided
+        p#secondsAvoided 0
 
-			#collectBoard
-				h3 Seconds left to collect
-				p#secondsLeft 20
+      #collectBoard
+        h3 Seconds left to collect
+        p#secondsLeft 20
 
-				h3 Amount Collected
-				p#amountCollected 0
+        h3 Amount Collected
+        p#amountCollected 0
 
-		#menuContainer
-			#menu
-				h1 bullet
-				h2 by jackharrhy
+    #menuContainer
+      #menu
+        h1 bullet
+        h2 by jackharrhy
 
-				button#start PLAY
+        button#start PLAY
 
-				a(href="https://github.com/jackharrhy/bullet")
-					p Source on Github
+        a(href="https://github.com/jackharrhy/bullet")
+          p Source on Github
 
-		#finish
-			h1 Game Over!
+    #finish
+      h1 Game Over!
 
-			#yourScores
-				h2 Your Scores
+      #yourScores
+        h2 Your Scores
 
-				#yourAvoidedContainer
-					h3 Your Avoided
+      #yourAvoidedContainer
+        h3 Your Avoided
 
-					ol#yourAvoided
+        ol#yourAvoided
 
-				#yourCollectedContainer
-					h3 Your Collected
+      #yourCollectedContainer
+        h3 Your Collected
 
-					ol#yourCollected
+	ol#yourCollected
 
-				#yourCombinedScoreContainer
-					h3 Your Combined Score
+      #yourCombinedScoreContainer
+        h3 Your Combined Score
 
-					ol#yourCombinedScore
+        ol#yourCombinedScore
 
-			#highScores
-				h2 Highscores
+      #highScores
+        h2 Highscores
 
-				#mostAvoidedContainer
-					h3 Most Avoided
+        #mostAvoidedContainer
+          h3 Most Avoided
 
-					ol#mostAvoided
+	  ol#mostAvoided
 
-				#mostCollectedContainer
-					h3 Most Collected
+        #mostCollectedContainer
+          h3 Most Collected
 
-					ol#mostCollected
+          ol#mostCollected
 
-				#bestCombinedScoreContainer
-					h3 Best Combined Score
+        #bestCombinedScoreContainer
+          h3 Best Combined Score
 
-					ol#bestCombinedScore
+          ol#bestCombinedScore
 
-		canvas#canvas
-			p Your browser doesn't support the HTML5 canvas, please upgrade to a suitable browser
+    canvas#canvas
+      p Your browser doesn't support the HTML5 canvas, please upgrade to a suitable browser
 
-		script(src="js/bullet.js")
+    script(src="js/bullet.js")

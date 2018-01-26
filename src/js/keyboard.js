@@ -2,7 +2,7 @@ var Combokeys = require('combokeys');
 var canvasInput = new Combokeys(document.documentElement);
 
 var kb = {
-	up: false, down: false, left: false, right: false
+  up: false, down: false, left: false, right: false
 };
 
 canvasInput.bind('up', function()    { kb.up = true;     }, 'keydown');
