@@ -33,7 +33,7 @@ module.exports = function (element) {
    *
    * @type {null|number}
    */
-  self.resetTimer
+  self.resetTimer = null
 
   /**
    * temporary state where we will ignore the next keyup
@@ -658,7 +658,7 @@ module.exports = function (e) {
   var character = characterFromEvent(e)
 
   // no character found then stop
-  if (!character) {
+  if (character === undefined) {
     return
   }
 
@@ -904,11 +904,11 @@ module.exports = function (e) {
   }
 
   // for non keypress events the special maps are needed
-  if (SPECIAL_KEYS_MAP[e.which]) {
+  if (SPECIAL_KEYS_MAP[e.which] !== undefined) {
     return SPECIAL_KEYS_MAP[e.which]
   }
 
-  if (SPECIAL_CHARACTERS_MAP[e.which]) {
+  if (SPECIAL_CHARACTERS_MAP[e.which] !== undefined) {
     return SPECIAL_CHARACTERS_MAP[e.which]
   }
 
@@ -1068,8 +1068,8 @@ module.exports = {
  */
 module.exports = {
   106: '*',
-  107: '+',
-  109: '-',
+  107: 'plus',
+  109: 'minus',
   110: '.',
   111: '/',
   186: ';',
@@ -1119,6 +1119,7 @@ module.exports = {
   46: 'del',
   91: 'meta',
   93: 'meta',
+  173: 'minus',
   187: 'plus',
   189: 'minus',
   224: 'meta'
@@ -1165,62 +1166,62 @@ var canvas = document.getElementById('canvas');
 var c = canvas.getContext('2d');
 
 var imgs = {
-	thisIsYou: document.getElementById('imgthisIsYou')
+  thisIsYou: document.getElementById('imgthisIsYou')
 };
 
 module.exports = {
-	getSize: function () {
-		return { x: window.innerWidth, y: window.innerHeight };
-	},
-	getCenter: function () {
-		return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-	},
-	getRandomBoundPoint: function () {
-		if (Math.random() >= 0.5) {
-			return { x: randInt(0, window.innerWidth), y: 0 };
-		}
-		return { x: 0, y: randInt(0, window.innerHeight) };
-	},
+  getSize: function () {
+    return { x: window.innerWidth, y: window.innerHeight };
+  },
+  getCenter: function () {
+    return { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  },
+  getRandomBoundPoint: function () {
+    if (Math.random() >= 0.5) {
+      return { x: randInt(0, window.innerWidth), y: 0 };
+    }
+    return { x: 0, y: randInt(0, window.innerHeight) };
+  },
 
-	resize: function () {
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-	},
+  resize: function () {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  },
 
-	hide: function () {
-		canvas.style.display = 'none';
-	},
+  hide: function () {
+    canvas.style.display = 'none';
+  },
 
-	img: function (imgStr, x, y) {
-		c.drawImage(imgs[imgStr], x, y);
-	},
+  img: function (imgStr, x, y) {
+    c.drawImage(imgs[imgStr], x, y);
+  },
 
-	circle: function (entity) {
-		c.fillStyle = entity.color;
-		c.beginPath();
-		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
-		c.fill();
-	},
+  circle: function (entity) {
+    c.fillStyle = entity.color;
+    c.beginPath();
+    c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
+    c.fill();
+  },
 
-	outlineCircle: function (entity) {
-		c.fillStyle = entity.color;
-		c.strokeStyle = entity.strokeColor;
-		c.beginPath();
-		c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
-		c.fill();
-		c.stroke();
-	},
+  outlineCircle: function (entity) {
+    c.fillStyle = entity.color;
+    c.strokeStyle = entity.strokeColor;
+    c.beginPath();
+    c.arc(entity.pos.x, entity.pos.y, entity.radius, 0, 2 * Math.PI);
+    c.fill();
+    c.stroke();
+  },
 
-	clear: function () {
-		c.fillStyle = 'white';
-		c.fillRect(0, 0, canvas.width, canvas.height);
-	},
+  clear: function () {
+    c.fillStyle = 'white';
+    c.fillRect(0, 0, canvas.width, canvas.height);
+  },
 
-	text: function (pos, text, size, color) {
-		c.fillStyle = color;
-		c.font = size.toString() + 'px Helvetica';
-		c.fillStyle(text, pos.x, pos.y);
-	}
+  text: function (pos, text, size, color) {
+    c.fillStyle = color;
+    c.font = size.toString() + 'px Helvetica';
+    c.fillStyle(text, pos.x, pos.y);
+  }
 };
 
 },{"./fab/randInt":39}],35:[function(require,module,exports){
@@ -1231,144 +1232,144 @@ var distanceCheck = require('./fab/distanceCheck');
 var squareCheck = require('./fab/squareCheck');
 
 function limit1DVel(vel, maxVel) {
-	if (vel > 0) {
-		return vel >= maxVel ? maxVel : vel;
-	}
-	return vel <= -maxVel ? -maxVel : vel;
+  if (vel > 0) {
+    return vel >= maxVel ? maxVel : vel;
+  }
+  return vel <= -maxVel ? -maxVel : vel;
 }
 
 function limitVel(entity) {
-	return {
-		x: limit1DVel(entity.vel.x, entity.maxVel.x),
-		y: limit1DVel(entity.vel.y, entity.maxVel.y)
-	};
+  return {
+    x: limit1DVel(entity.vel.x, entity.maxVel.x),
+    y: limit1DVel(entity.vel.y, entity.maxVel.y)
+  };
 }
 
 module.exports = {
-	create: function (frag) {
-		return {
-			radius: frag.radius || 4,
-			color: frag.color || 'black',
+  create: function (frag) {
+    return {
+      radius: frag.radius || 4,
+      color: frag.color || 'black',
 
-			pos: frag.pos || { x: 0, y: 0 },
-			posOffset: frag.posOffset || { x: 0, y: 0 },
+      pos: frag.pos || { x: 0, y: 0 },
+      posOffset: frag.posOffset || { x: 0, y: 0 },
 
-			vel: frag.vel || { x: 0, y: 0 },
-			maxVel: frag.maxVel || { x: 0, y: 0 },
+      vel: frag.vel || { x: 0, y: 0 },
+      maxVel: frag.maxVel || { x: 0, y: 0 },
 
-			acel: frag.acel || { x: 0, y: 0 }
-		};
-	},
+      acel: frag.acel || { x: 0, y: 0 }
+    };
+  },
 
-	basePlayer: function (center) {
-		return this.create({
-			radius: 5,
-			color: 'white',
-			outlineColor: 'black',
+  basePlayer: function (center) {
+    return this.create({
+      radius: 5,
+      color: 'white',
+      outlineColor: 'black',
 
-			pos: center,
+      pos: center,
 
-			maxVel: { x: 3, y: 3 },
-			acel: { x: 0.4, y: 0.4 }
-		});
-	},
+      maxVel: { x: 3, y: 3 },
+      acel: { x: 0.4, y: 0.4 }
+    });
+  },
 
-	checkCollision: function (ent1, ent2) {
-		return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
-	},
+  checkCollision: function (ent1, ent2) {
+    return squareCheck(ent1, ent2) && distanceCheck(ent1, ent2);
+  },
 
-	acel: function (entity) {
-		entity.vel.y += entity.acel.y;
-		entity.vel.x += entity.acel.x;
-	},
+  acel: function (entity) {
+    entity.vel.y += entity.acel.y;
+    entity.vel.x += entity.acel.x;
+  },
 
-	move: function (entity) {
-		entity.vel = limitVel(entity);
+  move: function (entity) {
+    entity.vel = limitVel(entity);
 
-		entity.pos = vec2.add(entity.pos, entity.vel);
-	},
+    entity.pos = vec2.add(entity.pos, entity.vel);
+  },
 
-	moveWithKeyboard: function (entity, keyboard) {
-		if (keyboard.up) {
-			entity.vel.y -= entity.acel.y;
-		}
-		if (keyboard.down) {
-			entity.vel.y += entity.acel.y;
-		}
-		if (keyboard.left) {
-			entity.vel.x -= entity.acel.x;
-		}
-		if (keyboard.right) {
-			entity.vel.x += entity.acel.x;
-		}
+  moveWithKeyboard: function (entity, keyboard) {
+    if (keyboard.up) {
+      entity.vel.y -= entity.acel.y;
+    }
+    if (keyboard.down) {
+      entity.vel.y += entity.acel.y;
+    }
+    if (keyboard.left) {
+      entity.vel.x -= entity.acel.x;
+    }
+    if (keyboard.right) {
+      entity.vel.x += entity.acel.x;
+    }
 
-		this.move(entity);
-	},
+    this.move(entity);
+  },
 
-	moveWithPlayer: function (entity, basePlayer) {
-		entity.pos = vec2.sub(basePlayer.pos, entity.posOffset);
-	},
+  moveWithPlayer: function (entity, basePlayer) {
+    entity.pos = vec2.sub(basePlayer.pos, entity.posOffset);
+  },
 
-	swapAround: function (entity, canvasSize) {
-		// Y Axis
-		if (entity.pos.y > canvasSize.y) {
-			entity.pos.y -= canvasSize.y;
-		} else if (entity.pos.y < 0) {
-			entity.pos.y += canvasSize.y;
-		}
+  swapAround: function (entity, canvasSize) {
+    // Y Axis
+    if (entity.pos.y > canvasSize.y) {
+      entity.pos.y -= canvasSize.y;
+    } else if (entity.pos.y < 0) {
+      entity.pos.y += canvasSize.y;
+    }
 
-		// X Axis
-		if (entity.pos.x > canvasSize.x) {
-			entity.pos.x -= canvasSize.x;
-		} else if (entity.pos.x < 0) {
-			entity.pos.x += canvasSize.x;
-		}
-	}
+    // X Axis
+    if (entity.pos.x > canvasSize.x) {
+      entity.pos.x -= canvasSize.x;
+    } else if (entity.pos.x < 0) {
+      entity.pos.x += canvasSize.x;
+    }
+  }
 };
 
 },{"./fab/distanceCheck":36,"./fab/squareCheck":40,"./vec2":46}],36:[function(require,module,exports){
 var pytha = require('./pytha');
 
 module.exports = function (ent1, ent2) {
-	var pythaSol = pytha(ent1.pos, ent2.pos);
-	return pythaSol < ent1.radius + ent2.radius;
+  var pythaSol = pytha(ent1.pos, ent2.pos);
+  return pythaSol < ent1.radius + ent2.radius;
 };
 
 },{"./pytha":37}],37:[function(require,module,exports){
 module.exports = function (pos1, pos2) {
-	return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
+  return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.y - pos2.y) * (pos1.y - pos2.y));
 };
 
 },{}],38:[function(require,module,exports){
 module.exports = function () {
-	return '#' + Math.random().toString(16).substr(-6);
+  return '#' + Math.random().toString(16).substr(-6);
 };
 
 },{}],39:[function(require,module,exports){
 module.exports = function (min, max) {
-	return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
 },{}],40:[function(require,module,exports){
 module.exports = function (ent1, ent2) {
-	return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
+  return !(ent1.pos.x + ent1.radius < ent2.pos.x - ent2.radius || ent1.pos.y + ent1.radius < ent2.pos.y - ent2.radius || ent1.pos.x - ent1.radius > ent2.pos.x + ent2.radius || ent1.pos.y - ent1.radius > ent2.pos.y + ent2.radius);
 };
 
 },{}],41:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded", function (event) {
-	var update = require('./update');
+  var update = require('./update');
 
-	var menu = document.getElementById('menu');
-	var startButton = document.getElementById('start');
-	var scoreBoards = document.getElementById('scoreBoards');
+  var menu = document.getElementById('menu');
+  var startButton = document.getElementById('start');
+  var scoreBoards = document.getElementById('scoreBoards');
 
-	startButton.onclick = function () {
-		menu.style.display = 'none';
-		scoreBoards.style.display = 'block';
+  startButton.onclick = function () {
+    menu.style.display = 'none';
+    scoreBoards.style.display = 'block';
 
-		update.renderLoop();
-		update.secondsLoop();
-	};
+    update.renderLoop();
+    update.secondsLoop();
+  };
 });
 
 },{"./update":45}],42:[function(require,module,exports){
@@ -1376,58 +1377,58 @@ var Combokeys = require('combokeys');
 var canvasInput = new Combokeys(document.documentElement);
 
 var kb = {
-	up: false, down: false, left: false, right: false
+  up: false, down: false, left: false, right: false
 };
 
 canvasInput.bind('up', function () {
-	kb.up = true;
+  kb.up = true;
 }, 'keydown');
 canvasInput.bind('up', function () {
-	kb.up = false;
+  kb.up = false;
 }, 'keyup');
 canvasInput.bind('down', function () {
-	kb.down = true;
+  kb.down = true;
 }, 'keydown');
 canvasInput.bind('down', function () {
-	kb.down = false;
+  kb.down = false;
 }, 'keyup');
 canvasInput.bind('left', function () {
-	kb.left = true;
+  kb.left = true;
 }, 'keydown');
 canvasInput.bind('left', function () {
-	kb.left = false;
+  kb.left = false;
 }, 'keyup');
 canvasInput.bind('right', function () {
-	kb.right = true;
+  kb.right = true;
 }, 'keydown');
 canvasInput.bind('right', function () {
-	kb.right = false;
+  kb.right = false;
 }, 'keyup');
 
 module.exports = kb;
 
 },{"combokeys":1}],43:[function(require,module,exports){
 var dom = {
-	scoreBoards: document.getElementById('scoreBoards'),
-	avoidingSeconds: document.getElementById('secondsAvoided'),
-	secondsLeft: document.getElementById('secondsLeft'),
-	amountCollected: document.getElementById('amountCollected')
+  scoreBoards: document.getElementById('scoreBoards'),
+  avoidingSeconds: document.getElementById('secondsAvoided'),
+  secondsLeft: document.getElementById('secondsLeft'),
+  amountCollected: document.getElementById('amountCollected')
 };
 
 module.exports = {
-	avoidingSeconds: 0,
-	secondsLeft: 20,
-	amountCollected: 0,
+  avoidingSeconds: 0,
+  secondsLeft: 20,
+  amountCollected: 0,
 
-	updateDOM: function () {
-		dom.avoidingSeconds.innerHTML = this.avoidingSeconds;
-		dom.secondsLeft.innerHTML = this.secondsLeft;
-		dom.amountCollected.innerHTML = this.amountCollected;
-	},
+  updateDOM: function () {
+    dom.avoidingSeconds.innerHTML = this.avoidingSeconds;
+    dom.secondsLeft.innerHTML = this.secondsLeft;
+    dom.amountCollected.innerHTML = this.amountCollected;
+  },
 
-	hide: function () {
-		dom.scoreBoards.style.display = 'none';
-	}
+  hide: function () {
+    dom.scoreBoards.style.display = 'none';
+  }
 };
 
 },{}],44:[function(require,module,exports){
@@ -1462,147 +1463,147 @@ canvas.resize();
 var basePlayer = entity.basePlayer(canvas.getCenter());
 
 function checkCollision(playerEntity) {
-	for (var b = 0, bLen = bulletArray.length; b < bLen; b++) {
-		if (bulletArray[b] && entity.checkCollision(playerEntity, bulletArray[b])) {
-			let bulletToMove = bulletArray[b];
+  for (var b = 0, bLen = bulletArray.length; b < bLen; b++) {
+    if (bulletArray[b] && entity.checkCollision(playerEntity, bulletArray[b])) {
+      let bulletToMove = bulletArray[b];
 
-			playerArray.push(entity.create({
-				radius: bulletToMove.radius,
-				color: bulletToMove.color,
-				pos: bulletToMove.pos,
-				posOffset: vec2.sub(basePlayer.pos, bulletToMove.pos)
-			}));
+      playerArray.push(entity.create({
+        radius: bulletToMove.radius,
+        color: bulletToMove.color,
+        pos: bulletToMove.pos,
+        posOffset: vec2.sub(basePlayer.pos, bulletToMove.pos)
+      }));
 
-			bulletArray.splice(b, 1);
+      bulletArray.splice(b, 1);
 
-			if (state.avoiding) {
-				state.avoiding = false;
-				document.getElementById('avoidBoard').style.opacity = '0.25';
-				document.getElementById('collectBoard').style.display = 'block';
-			}
+      if (state.avoiding) {
+        state.avoiding = false;
+        document.getElementById('avoidBoard').style.opacity = '0.25';
+        document.getElementById('collectBoard').style.display = 'block';
+      }
 
-			scoreBoard.amountCollected++;
-			scoreBoard.updateDOM();
-		}
-	}
+      scoreBoard.amountCollected++;
+      scoreBoard.updateDOM();
+    }
+  }
 }
 
 function renderLoop() {
-	frame++;
-	canvas.clear();
+  frame++;
+  canvas.clear();
 
-	var canvasSize = canvas.getSize();
+  var canvasSize = canvas.getSize();
 
-	if (!state.hasMoved) {
-		canvas.img('thisIsYou', canvasSize.x / 2 - 70, canvasSize.y / 2 - 123);
-		if (keyboard.up || keyboard.down || keyboard.left || keyboard.right) {
-			state.hasMoved = true;
-		}
-	}
+  if (!state.hasMoved) {
+    canvas.img('thisIsYou', canvasSize.x / 2 - 70, canvasSize.y / 2 - 123);
+    if (keyboard.up || keyboard.down || keyboard.left || keyboard.right) {
+      state.hasMoved = true;
+    }
+  }
 
-	for (var i = 0; i < bulletArray.length; i++) {
-		if (bulletArray[i]) {
-			let bulletEntity = bulletArray[i];
+  for (var i = 0; i < bulletArray.length; i++) {
+    if (bulletArray[i]) {
+      let bulletEntity = bulletArray[i];
 
-			entity.move(bulletEntity);
-			entity.acel(bulletEntity);
-			entity.swapAround(bulletEntity, canvasSize);
+      entity.move(bulletEntity);
+      entity.acel(bulletEntity);
+      entity.swapAround(bulletEntity, canvasSize);
 
-			canvas.circle(bulletEntity);
-		}
-	}
+      canvas.circle(bulletEntity);
+    }
+  }
 
-	entity.moveWithKeyboard(basePlayer, keyboard);
-	entity.swapAround(basePlayer, canvasSize);
-	canvas.outlineCircle(basePlayer);
-	checkCollision(basePlayer);
+  entity.moveWithKeyboard(basePlayer, keyboard);
+  entity.swapAround(basePlayer, canvasSize);
+  canvas.outlineCircle(basePlayer);
+  checkCollision(basePlayer);
 
-	for (var p = 0; p < playerArray.length; p++) {
-		let playerEntity = playerArray[p];
+  for (var p = 0; p < playerArray.length; p++) {
+    let playerEntity = playerArray[p];
 
-		entity.moveWithPlayer(playerEntity, basePlayer);
-		entity.swapAround(playerEntity, canvasSize);
+    entity.moveWithPlayer(playerEntity, basePlayer);
+    entity.swapAround(playerEntity, canvasSize);
 
-		canvas.circle(playerEntity);
-		checkCollision(playerEntity);
-	}
+    canvas.circle(playerEntity);
+    checkCollision(playerEntity);
+  }
 
-	if (!state.finished) {
-		window.requestAnimationFrame(renderLoop);
-	}
+  if (!state.finished) {
+    window.requestAnimationFrame(renderLoop);
+  }
 }
 
 function secondsLoop() {
-	seconds++;
+  seconds++;
 
-	if (state.hasMoved) {
-		if (state.avoiding) {
-			scoreBoard.avoidingSeconds++;
-		} else {
-			scoreBoard.secondsLeft--;
+  if (state.hasMoved) {
+    if (state.avoiding) {
+      scoreBoard.avoidingSeconds++;
+    } else {
+      scoreBoard.secondsLeft--;
 
-			if (scoreBoard.secondsLeft <= 0) {
-				state.finished = true;
-			}
-		}
+      if (scoreBoard.secondsLeft <= 0) {
+        state.finished = true;
+      }
+    }
 
-		scoreBoard.updateDOM();
+    scoreBoard.updateDOM();
 
-		if (bulletArray.length <= 130) {
-			bulletArray.push(entity.create({
-				radius: randInt(7, 14),
-				color: randHex(),
+    if (bulletArray.length <= 130) {
+      bulletArray.push(entity.create({
+        radius: randInt(7, 14),
+        color: randHex(),
 
-				pos: canvas.getRandomBoundPoint(),
-				maxVel: {
-					x: Math.random() * seconds / 7 + 1,
-					y: Math.random() * seconds / 7 + 1
-				},
-				acel: {
-					x: Math.random() < 0.5 ? -0.005 : 0.005,
-					y: Math.random() < 0.5 ? -0.005 : 0.005
-				}
-			}));
-		}
-	}
+        pos: canvas.getRandomBoundPoint(),
+        maxVel: {
+          x: Math.random() * seconds / 7 + 1,
+          y: Math.random() * seconds / 7 + 1
+        },
+        acel: {
+          x: Math.random() < 0.5 ? -0.005 : 0.005,
+          y: Math.random() < 0.5 ? -0.005 : 0.005
+        }
+      }));
+    }
+  }
 
-	if (!state.finished) {
-		setTimeout(secondsLoop, 1000);
-		//finish();
-	} else {
-		finish();
-	}
+  if (!state.finished) {
+    setTimeout(secondsLoop, 1000);
+    //finish();
+  } else {
+    finish();
+  }
 }
 
 function finish() {
-	scoreBoard.hide();
-	canvas.hide();
-	document.getElementById('menuContainer').style.display = 'none';
-	document.getElementById('finish').style.display = 'block';
+  scoreBoard.hide();
+  canvas.hide();
+  document.getElementById('menuContainer').style.display = 'none';
+  document.getElementById('finish').style.display = 'block';
 }
 
 module.exports = {
-	renderLoop: renderLoop,
-	secondsLoop: secondsLoop
+  renderLoop: renderLoop,
+  secondsLoop: secondsLoop
 };
 
 },{"./canvas":34,"./entity":35,"./fab/randHex":38,"./fab/randInt":39,"./keyboard":42,"./scoreBoard":43,"./state":44,"./vec2.js":46}],46:[function(require,module,exports){
 function add(firstVec, secondVec) {
-	return { x: firstVec.x + secondVec.x, y: firstVec.y + secondVec.y };
+  return { x: firstVec.x + secondVec.x, y: firstVec.y + secondVec.y };
 }
 
 function sub(firstVec, secondVec) {
-	return { x: firstVec.x - secondVec.x, y: firstVec.y - secondVec.y };
+  return { x: firstVec.x - secondVec.x, y: firstVec.y - secondVec.y };
 }
 
 function multi(firstVec, secondVec) {
-	return { x: firstVec.x * secondVec.x, y: firstVec.y * secondVec.y };
+  return { x: firstVec.x * secondVec.x, y: firstVec.y * secondVec.y };
 }
 
 module.exports = {
-	add: add,
-	sub: sub,
-	multi: multi
+  add: add,
+  sub: sub,
+  multi: multi
 };
 
 },{}]},{},[41])

@@ -1,5 +1,6 @@
 # bullet
-a small vanilla html5 canvas object-avoiding game
+
+A small vanilla html5 canvas object-avoiding game.
 
 ## Prerequisites
 
@@ -9,13 +10,16 @@ a small vanilla html5 canvas object-avoiding game
 ## Install
 
 ```
+// You must have gulp installed globally
+npm install -g gulp
+
 git clone https://github.com/jackharrhy/bullet.git
 ```
 
 ## Run
 
 ```
-cd bullet-master
+cd /path/to/repo
 npm install
 gulp
 ```
