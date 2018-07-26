@@ -1,6 +1,8 @@
-module.exports = {
-  avoiding: true,
-  finished: false,
+'use strict';
 
-  hasMoved: false
+module.exports = {
+	avoiding: true,
+	finished: false,
+
+	hasMoved: false,
 };

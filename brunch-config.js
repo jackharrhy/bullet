@@ -1,24 +1,25 @@
-exports.files = {
-	javascripts: {
-		joinTo: {
-			'vendor.js': /^(?!app)/, // Files that are not in `app` dir.
-			'bundle.js': /^app/
+'use strict';
+
+module.exports = {
+	files: {
+		javascripts: {
+			joinTo: {
+				'vendor.js': /^(?!app)/,
+				'bundle.js': /^app/,
+			},
+		},
+		stylesheets: {
+			joinTo: 'style.css',
 		},
 	},
-	stylesheets: {
-		joinTo: 'style.css'
-	}
+	npm: {
+		styles: {
+			'normalize.css': ['normalize.css'],
+		},
+	},
+	plugins: {
+		babel: {
+			presets: ['latest'],
+		},
+	},
 };
-
-exports.npm = {
-	styles: {
-		'normalize.css': ['normalize.css']
-	}
-};
-
-exports.plugins = {
-	babel: {
-		presets: ['latest']
-	}
-};
-
