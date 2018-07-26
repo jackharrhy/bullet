@@ -1,15 +1,17 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-  var update = require('./update');
+'use strict';
 
-  var menu = document.getElementById('menu');
-  var startButton = document.getElementById('start');
-  var scoreBoards = document.getElementById('scoreBoards');
+document.addEventListener('DOMContentLoaded', () => {
+	const update = require('./update');
 
-  startButton.onclick = function() {
-    menu.style.display = 'none';
-    scoreBoards.style.display = 'block';
+	const menu = document.getElementById('menu');
+	const startButton = document.getElementById('start');
+	const scoreBoards = document.getElementById('scoreBoards');
 
-    update.renderLoop();
-    update.secondsLoop();
-  };
+	startButton.onclick = function () {
+		menu.style.display = 'none';
+		scoreBoards.style.display = 'block';
+
+		update.renderLoop();
+		update.secondsLoop();
+	};
 });
