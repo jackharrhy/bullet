@@ -5,21 +5,19 @@
     "type": "git",
     "url": "https://github.com/jackharrhy/bullets.git"
   },
-  "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babelify": "^8.0.0",
-    "browser-sync": "^2.24.4",
-    "browserify": "^16.2.2",
+  "scripts": {
+    "start": "brunch watch --server",
+    "build": "brunch build --production"
+  },
+  "dependencies": {
     "combokeys": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-cssmin": "^0.2.0",
-    "gulp-htmlmin": "^4.0.0",
-    "gulp-less": "^3.5.0",
-    "gulp-rename": "^1.2.3",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.0",
-    "gulp-util": "^3.0.7",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^2.0.0"
+    "auto-reload-brunch": "^2",
+    "babel-brunch": "~6.0",
+    "babel-preset-latest": "^6",
+    "brunch": "^2",
+    "clean-css-brunch": "^2",
+    "less-brunch": "^2.10.0",
+    "normalize.css": "^8.0.0",
+    "uglify-js-brunch": "^2"
   }
 }
