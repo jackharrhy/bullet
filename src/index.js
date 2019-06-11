@@ -1,5 +1,8 @@
 'use strict';
 
+import 'normalize.css';
+import './styles/main.scss';
+
 document.addEventListener('DOMContentLoaded', () => {
 	const update = require('./update');
 
@@ -7,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const startButton = document.getElementById('start');
 	const scoreBoards = document.getElementById('scoreBoards');
 
-	startButton.onclick = function () {
+	startButton.onclick = () => {
 		menu.style.display = 'none';
 		scoreBoards.style.display = 'block';
 
