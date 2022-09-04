@@ -1,0 +1,126 @@
+body {
+	margin: 0;
+	display: block !important;
+
+	font-family: Helvetica, sans-serif;
+	color: rgb(240, 240, 240);
+}
+
+img {
+	display: none;
+}
+
+#scoreBoards {
+	position: absolute;
+	top: 0;
+	display: none;
+}
+
+#scoreBoards #avoidBoard {
+	display: block;
+	background-color: #4d8cc0;
+}
+
+#scoreBoards #collectBoard {
+	display: none;
+	background-color: #a26f45;
+}
+
+#scoreBoards #avoidBoard,
+#scoreBoards #collectBoard {
+	opacity: 0.6;
+	width: 17em;
+	margin-top: 0.5em;
+	margin-left: 0.5em;
+	background-color: #4682b4;
+	padding: 0.5em 0.9em;
+}
+
+#scoreBoards h3,
+#scoreBoards p {
+	margin: 0.25em 0;
+}
+
+#scoreBoards p {
+	text-align: left;
+}
+
+#menuContainer {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#menu {
+	width: 13em;
+	height: 12.5em;
+	max-width: 50%;
+
+	background-color: #4682b4;
+
+	text-align: center;
+}
+
+#menu button {
+	width: 8em;
+	height: 2.5em;
+
+	border: none;
+	outline: none;
+
+	background-color: rgb(220, 255, 220);
+}
+
+#menu button:hover {
+	background-color: rgb(180, 255, 180);
+}
+
+#menu h1 {
+	margin: 0.3em 0 0 0;
+	font-size: 3em;
+}
+
+#menu h2 {
+	margin: 0 0 0.7em 0;
+}
+
+#menu a {
+	text-decoration: none;
+	color: rgb(220, 220, 255);
+}
+
+#menu a:hover {
+	color: rgb(180, 180, 255);
+}
+
+canvas {
+	z-index: -1;
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 100%;
+}
+
+#finish {
+	display: none;
+	background-color: #4682b4;
+	text-align: center;
+}
+
+#mostAvoidedContainer,
+#mostCollectedContainer,
+#bestCombinedScoreContainer {
+	display: inline-block;
+	width: 33.333%;
+}
+
+#mostCollectedContainer {
+	left: 33.333%;
+}
+
+#bestCombinedScoreContainer h3 {
+	font-size: 0.9em;
+}

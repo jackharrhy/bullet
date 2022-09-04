@@ -1,23 +1,11 @@
 # bullet
+
 A small vanilla html5 canvas object-avoiding game.
 
-## Prerequisites
-+ node
-+ npm
+2016 - created
 
-## Run
+2018 - converted to brunch, and added eslint-config-bluedrop
 
-To open the game in your browser:
+2019 - converted to webpack
 
-```bash
-cd /path/to/repo
-npm install
-npm start
-```
-
-To output the production version of bullet:
-
-```bash
-npm run build
-```
-
+2022 - converted to use vite + typescript
