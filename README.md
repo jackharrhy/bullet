@@ -1,5 +1,7 @@
 # bullet
 
+https://jackharrhy.github.io/bullet/
+
 A small vanilla html5 canvas object-avoiding game.
 
 2016 - created
